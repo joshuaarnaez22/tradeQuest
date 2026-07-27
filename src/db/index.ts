@@ -1,5 +1,4 @@
 import { drizzle } from "drizzle-orm/neon-http";
-import { neonConfig } from "@neondatabase/serverless";
 import * as schema from "./schema";
 
 // Lazy accessor, not a top-level `neon()`/`drizzle()` call: the Neon driver throws
@@ -17,7 +16,3 @@ export function getDb() {
   }
   return _db;
 }
-
-// Neon's serverless driver fetches over HTTP by default; disabling this cache
-// keeps query results from being cached across requests in server environments.
-neonConfig.fetchConnectionCache = true;

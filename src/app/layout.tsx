@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Anton, Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 const anton = Anton({
@@ -43,7 +44,9 @@ export default function RootLayout({
         } as React.CSSProperties
       }
     >
-      <body>{children}</body>
+      <body>
+        <ClerkProvider>{children}</ClerkProvider>
+      </body>
     </html>
   );
 }

@@ -1,6 +1,14 @@
-// TODO(Phase 3): gate this layout behind Clerk auth (redirect to /sign-in if unauthenticated).
+import { UserButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+
+// proxy.ts is the first line of defense; this is the second, per-request one
+// (server components/actions under (app)/ should not rely on proxy.ts alone).
 // TODO(Phase 4/7): replace the plain links below with the ported Nav component (core/IconButton + core/Tag).
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const { userId } = await auth();
+  if (!userId) redirect("/sign-in");
+
   return (
     <div data-theme="dark" style={{ minHeight: "100vh", background: "var(--surface-page)", color: "var(--text-primary)" }}>
       <nav
@@ -18,6 +26,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <a href="/replay">Replay</a>
         <a href="/dashboard">Dashboard</a>
         <a href="/leaderboard">Leaderboard</a>
+        <span style={{ marginLeft: "auto" }}>
+          <UserButton />
+        </span>
       </nav>
       {children}
     </div>

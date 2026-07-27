@@ -1,6 +1,9 @@
-import { PhasePlaceholder } from "@/components/PhasePlaceholder";
+import { SignIn } from "@clerk/nextjs";
 
-// TODO(Phase 3): replace with Clerk's <SignIn /> (appearance prop themed against globals.css tokens).
 export default function SignInPage() {
-  return <PhasePlaceholder title="Sign in" note="Clerk's sign-in form lands here in Phase 3." />;
+  return (
+    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "var(--surface-page)" }}>
+      <SignIn forceRedirectUrl="/replay" />
+    </div>
+  );
 }
