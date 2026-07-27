@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/tradequest-design-system-940dde76-c05f-4f2c-87c9-174b2398896e/tokens/colors.css">
+<link rel="stylesheet" href="_ds/tradequest-design-system-940dde76-c05f-4f2c-87c9-174b2398896e/tokens/typography.css">
+<link rel="stylesheet" href="_ds/tradequest-design-system-940dde76-c05f-4f2c-87c9-174b2398896e/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/tradequest-design-system-940dde76-c05f-4f2c-87c9-174b2398896e/tokens/effects.css">
+<link rel="stylesheet" href="_ds/tradequest-design-system-940dde76-c05f-4f2c-87c9-174b2398896e/tokens/base.css">
+<link rel="stylesheet" href="_ds/tradequest-design-system-940dde76-c05f-4f2c-87c9-174b2398896e/styles.css">
+<script src="_ds/tradequest-design-system-940dde76-c05f-4f2c-87c9-174b2398896e/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;padding:0;background:var(--surface-page);}
+*{box-sizing:border-box;}
+a{color:inherit;text-decoration:none;}
+a:hover{text-decoration:underline;text-underline-offset:3px;}
+@keyframes tqCandle{0%{transform:scaleY(0);opacity:0}3%{transform:scaleY(1);opacity:1}90%{transform:scaleY(1);opacity:1}96%{transform:scaleY(1);opacity:1}100%{transform:scaleY(0);opacity:0}}
+@keyframes tqGhost{0%,14%{opacity:0}22%{opacity:1}90%{opacity:1}100%{opacity:0}}
+@keyframes tqAsk{0%,16%{opacity:0;transform:scale(.6)}24%{opacity:1;transform:scale(1)}38%{transform:scale(1.14)}52%{transform:scale(1)}66%{transform:scale(1.14)}80%{transform:scale(1)}92%{opacity:1}100%{opacity:0;transform:scale(.6)}}
+@keyframes tqDraw{from{stroke-dashoffset:var(--dash,800)}to{stroke-dashoffset:0}}
+@keyframes tqRise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tqSlideIn{from{opacity:0;transform:translateX(-26px) scaleY(.4)}to{opacity:1;transform:translateX(0) scaleY(1)}}
+@keyframes tqPress{0%,55%{transform:translateY(0)}70%,100%{transform:translateY(4px)}}
+@keyframes tqMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes tqFlicker{0%,100%{transform:scale(1) rotate(0deg)}45%{transform:scale(1.06,.96) rotate(-2deg)}70%{transform:scale(.97,1.04) rotate(1.5deg)}}
+@keyframes tqBurst{0%{opacity:0;transform:scale(.2)}40%{opacity:1}100%{opacity:0;transform:scale(1.9)}}
+@keyframes tqSpinSticker{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+@keyframes tqBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes tqRewind{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+@keyframes tqStack{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tqShake{0%,100%{transform:rotate(-6deg)}20%{transform:rotate(-11deg)}40%{transform:rotate(-1deg)}60%{transform:rotate(-9deg)}80%{transform:rotate(-4deg)}}
+@keyframes tqRevealIn{from{opacity:0;transform:scaleY(0)}to{opacity:1;transform:scaleY(1)}}
+@keyframes tqPopIn{0%{opacity:0;transform:scale(.4)}70%{transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
+@keyframes tqDot{0%,100%{transform:scale(1)}50%{transform:scale(1.5)}}
+@keyframes tqTilt{0%,100%{transform:rotate(-6deg) translateY(0)}50%{transform:rotate(-1deg) translateY(-5px)}}
+@keyframes tqSway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
+@keyframes tqThrob{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.09) rotate(6deg)}}
+@keyframes tqStep1{0%,2%{opacity:0;transform:translateY(14px) scaleY(.35)}9%,82%{opacity:1;transform:translateY(0) scaleY(1)}90%,100%{opacity:0;transform:translateY(14px) scaleY(.35)}}
+@keyframes tqStep2{0%,16%{opacity:0;transform:translateY(14px) scaleY(.35)}23%,82%{opacity:1;transform:translateY(0) scaleY(1)}90%,100%{opacity:0;transform:translateY(14px) scaleY(.35)}}
+@keyframes tqStep3{0%,30%{opacity:0;transform:translateY(14px) scaleY(.35)}37%,82%{opacity:1;transform:translateY(0) scaleY(1)}90%,100%{opacity:0;transform:translateY(14px) scaleY(.35)}}
+@keyframes tqStep4{0%,44%{opacity:0;transform:translateY(14px) scaleY(.35)}51%,82%{opacity:1;transform:translateY(0) scaleY(1)}90%,100%{opacity:0;transform:translateY(14px) scaleY(.35)}}
+@keyframes tqPressLoop{0%,38%{transform:translateY(0)}52%,74%{transform:translateY(4px)}88%,100%{transform:translateY(0)}}
+@keyframes tqW1{0%,3%{opacity:0;transform:scale(.3)}7%{opacity:1;transform:scale(1.15)}10%,88%{opacity:1;transform:scale(1)}94%,100%{opacity:0;transform:scale(.3)}}
+@keyframes tqW2{0%,10%{opacity:0;transform:scale(.3)}14%{opacity:1;transform:scale(1.15)}17%,88%{opacity:1;transform:scale(1)}94%,100%{opacity:0;transform:scale(.3)}}
+@keyframes tqW3{0%,17%{opacity:0;transform:scale(.3)}21%{opacity:1;transform:scale(1.15)}24%,88%{opacity:1;transform:scale(1)}94%,100%{opacity:0;transform:scale(.3)}}
+@keyframes tqW4{0%,24%{opacity:0;transform:scale(.3)}28%{opacity:1;transform:scale(1.15)}31%,88%{opacity:1;transform:scale(1)}94%,100%{opacity:0;transform:scale(.3)}}
+@keyframes tqW5{0%,31%{opacity:0;transform:scale(.3)}35%{opacity:1;transform:scale(1.15)}38%,88%{opacity:1;transform:scale(1)}94%,100%{opacity:0;transform:scale(.3)}}
+@keyframes tqW6{0%,38%{opacity:0;transform:scale(.3)}42%{opacity:1;transform:scale(1.15)}45%,88%{opacity:1;transform:scale(1)}94%,100%{opacity:0;transform:scale(.3)}}
+@keyframes tqW7{0%,45%{opacity:0;transform:scale(.3)}49%{opacity:1;transform:scale(1.15)}52%,88%{opacity:1;transform:scale(1)}94%,100%{opacity:0;transform:scale(.3)}}
+@keyframes tqRowIn{0%{opacity:0;transform:translateX(18px)}8%,88%{opacity:1;transform:translateX(0)}96%,100%{opacity:0;transform:translateX(18px)}}
+@keyframes tqDrawLoop{0%{stroke-dashoffset:var(--dash,60)}26%{stroke-dashoffset:0}84%{stroke-dashoffset:0}100%{stroke-dashoffset:var(--dash,60)}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+
+<div data-theme="{{ theme }}" style="font-family:var(--font-sans);background:var(--surface-page);color:var(--text-primary);overflow-x:hidden;">
+
+<div style="position:sticky;top:0;z-index:50;padding:16px 20px;display:flex;justify-content:center;pointer-events:none;">
+  <nav style="pointer-events:auto;width:100%;max-width:1120px;display:flex;align-items:center;gap:16px;justify-content:space-between;background:var(--surface-card);border:var(--border-width-thick) solid var(--border-default);border-radius:var(--radius-pill);padding:10px 12px 10px 24px;box-shadow:var(--shadow-flat-md);">
+    <a href="#top" style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:24px;letter-spacing:.01em;line-height:1;">TradeQuest</a>
+    <div style="display:none;gap:4px;align-items:center;" data-navlinks="1">
+      <a href="#how" style="font-size:14px;font-weight:600;padding:8px 16px;border-radius:var(--radius-pill);">How it works</a>
+      <a href="#loop" style="font-size:14px;font-weight:600;padding:8px 16px;border-radius:var(--radius-pill);">The daily loop</a>
+      <a href="#fair" style="font-size:14px;font-weight:600;padding:8px 16px;border-radius:var(--radius-pill);">Not gambling</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button onClick="{{ toggleTheme }}" aria-label="Toggle dark mode" style="width:40px;height:40px;flex:0 0 auto;border-radius:var(--radius-pill);border:var(--border-width-thick) solid var(--border-default);background:var(--surface-card);color:var(--text-primary);cursor:pointer;font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">{{ themeGlyph }}</button>
+      <a href="#waitlist" style="font-size:15px;font-weight:700;padding:12px 24px;border-radius:var(--radius-pill);border:var(--border-width-thick) solid var(--surface-inverse);background:var(--surface-inverse);color:var(--text-on-inverse);box-shadow:var(--shadow-flat-sm);transition:transform var(--duration-fast) var(--ease-out),box-shadow var(--duration-fast) var(--ease-out);" style-hover="transform:translate(-2px,-2px);box-shadow:var(--shadow-flat-md);text-decoration:none;">Join the waitlist</a>
+    </div>
+  </nav>
+</div>
+
+<section id="top" style="background:var(--ink-900);color:var(--paper-0);padding:64px 20px 88px;">
+  <div style="max-width:1120px;margin:0 auto;display:grid;gap:48px;">
+    <div style="display:grid;gap:24px;justify-items:start;max-width:820px;">
+      <span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;padding:6px 14px;border-radius:var(--radius-pill);background:var(--amber-500);color:var(--ink-900);border:var(--border-width-thick) solid var(--ink-900);">Free · Launching soon</span>
+      <h1 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:clamp(48px,9vw,132px);line-height:.9;letter-spacing:.01em;margin:0;text-wrap:balance;">Read the chart.<br>Not the news.</h1>
+      <p style="font-size:clamp(17px,2vw,21px);line-height:1.5;color:var(--ink-100);margin:0;max-width:56ch;">Replay real historical crypto markets one candle at a time, call buy, sell or wait, and build the habit with daily streaks and XP.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+        <a href="#waitlist" style="font-size:17px;font-weight:700;padding:16px 32px;border-radius:var(--radius-pill);background:var(--violet-500);color:var(--paper-0);border:var(--border-width-thick) solid var(--paper-0);box-shadow:4px 4px 0 0 var(--paper-0);transition:transform var(--duration-fast) var(--ease-out),box-shadow var(--duration-fast) var(--ease-out);" style-hover="transform:translate(-2px,-2px);box-shadow:6px 6px 0 0 var(--paper-0);text-decoration:none;">Start your first replay</a>
+        <a href="#how" style="font-size:17px;font-weight:700;padding:16px 32px;border-radius:var(--radius-pill);border:var(--border-width-thick) solid var(--ink-300);color:var(--paper-0);">See how it works</a>
+      </div>
+    </div>
+
+    <div style="background:var(--paper-50);border:var(--border-width-thick) solid var(--ink-900);border-radius:32px;box-shadow:8px 8px 0 0 var(--violet-500);padding:20px;">
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span data-hero-pair="1" style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--ink-900);">BTC/USD</span>
+          <span data-hero-tf="1" style="font-family:var(--font-mono);font-size:13px;font-weight:600;padding:4px 10px;border-radius:var(--radius-pill);background:var(--blue-100);color:var(--blue-700);">▲ replay · 4h</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;font-size:12px;font-weight:700;color:var(--ink-500);">
+          <span style="display:inline-flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="3" y="2" width="8" height="10" rx="1.5" fill="var(--blue-500)" stroke="var(--ink-900)" stroke-width="2"></rect></svg>▲ Up (solid)</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="3" y="2" width="8" height="10" rx="1.5" fill="var(--paper-0)" stroke="var(--orange-500)" stroke-width="2"></rect></svg>▼ Down (hollow)</span>
+        </div>
+      </div>
+
+      <svg viewBox="0 0 720 320" role="img" aria-label="Candlestick replay chart: sixteen historical candles followed by three unknown future candles marked with a question mark." style="width:100%;height:auto;display:block;">
+        <g stroke="var(--ink-100)" stroke-width="1.5">
+          <line x1="16" y1="90" x2="704" y2="90"></line>
+          <line x1="16" y1="150" x2="704" y2="150"></line>
+          <line x1="16" y1="210" x2="704" y2="210"></line>
+          <line x1="16" y1="270" x2="704" y2="270"></line>
+        </g>
+        <path data-hero-trend="support" d="M30 268 L556 148" fill="none" stroke="var(--violet-500)" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 10" style="--dash:560;stroke-dashoffset:0;animation:tqDraw 1.4s var(--ease-out) .3s both;"></path>
+        <path data-hero-trend="resistance" d="M30 210 L556 96" fill="none" stroke="var(--violet-500)" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 10" style="--dash:560;stroke-dashoffset:0;animation:tqDraw 1.4s var(--ease-out) .5s both;"></path>
+
+        <g stroke="var(--ink-900)" stroke-width="2.5" stroke-linecap="round">
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear 0s infinite;"><line x1="32" y1="226" x2="32" y2="256"></line><rect x="24" y="232" width="16" height="18" rx="2" fill="var(--blue-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .06s infinite;"><line x1="66" y1="210" x2="66" y2="236"></line><rect x="58" y="218" width="16" height="14" rx="2" fill="var(--blue-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .12s infinite;"><line x1="100" y1="214" x2="100" y2="234" stroke="var(--orange-700)"></line><rect x="92" y="218" width="16" height="10" rx="2" fill="var(--paper-0)" stroke="var(--orange-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .18s infinite;"><line x1="134" y1="198" x2="134" y2="232"></line><rect x="126" y="205" width="16" height="23" rx="2" fill="var(--blue-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .24s infinite;"><line x1="168" y1="182" x2="168" y2="209"></line><rect x="160" y="190" width="16" height="15" rx="2" fill="var(--blue-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .3s infinite;"><line x1="202" y1="186" x2="202" y2="210" stroke="var(--orange-700)"></line><rect x="194" y="190" width="16" height="14" rx="2" fill="var(--paper-0)" stroke="var(--orange-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .36s infinite;"><line x1="236" y1="200" x2="236" y2="220" stroke="var(--orange-700)"></line><rect x="228" y="204" width="16" height="10" rx="2" fill="var(--paper-0)" stroke="var(--orange-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .42s infinite;"><line x1="270" y1="190" x2="270" y2="218"></line><rect x="262" y="196" width="16" height="18" rx="2" fill="var(--blue-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .48s infinite;"><line x1="304" y1="164" x2="304" y2="200"></line><rect x="296" y="172" width="16" height="24" rx="2" fill="var(--blue-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .54s infinite;"><line x1="338" y1="150" x2="338" y2="176"></line><rect x="330" y="158" width="16" height="14" rx="2" fill="var(--blue-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .6s infinite;"><line x1="372" y1="154" x2="372" y2="182" stroke="var(--orange-700)"></line><rect x="364" y="158" width="16" height="18" rx="2" fill="var(--paper-0)" stroke="var(--orange-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .66s infinite;"><line x1="406" y1="172" x2="406" y2="194" stroke="var(--orange-700)"></line><rect x="398" y="176" width="16" height="12" rx="2" fill="var(--paper-0)" stroke="var(--orange-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .72s infinite;"><line x1="440" y1="156" x2="440" y2="192"></line><rect x="432" y="164" width="16" height="24" rx="2" fill="var(--blue-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .78s infinite;"><line x1="474" y1="132" x2="474" y2="168"></line><rect x="466" y="140" width="16" height="24" rx="2" fill="var(--blue-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .84s infinite;"><line x1="508" y1="136" x2="508" y2="158" stroke="var(--orange-700)"></line><rect x="500" y="140" width="16" height="12" rx="2" fill="var(--paper-0)" stroke="var(--orange-500)"></rect></g>
+          <g data-hero-candle="1" style="transform-box:fill-box;transform-origin:bottom;animation:tqCandle 7s linear .9s infinite;"><line x1="542" y1="110" x2="542" y2="156"></line><rect x="534" y="118" width="16" height="34" rx="2" fill="var(--blue-500)"></rect></g>
+        </g>
+
+        <g data-hero-freeze="1" style="animation:tqGhost 7s linear 0s infinite;">
+          <g data-hero-ghost1="1">
+            <rect x="568" y="104" width="16" height="40" rx="2" fill="none" stroke="var(--ink-300)" stroke-width="2.5" stroke-dasharray="6 6"></rect>
+            <rect x="602" y="112" width="16" height="40" rx="2" fill="none" stroke="var(--ink-300)" stroke-width="2.5" stroke-dasharray="6 6"></rect>
+            <rect x="636" y="98" width="16" height="40" rx="2" fill="none" stroke="var(--ink-300)" stroke-width="2.5" stroke-dasharray="6 6"></rect>
+          </g>
+          <line x1="560" y1="70" x2="560" y2="290" stroke="var(--ink-300)" stroke-width="2" stroke-dasharray="4 8"></line>
+        </g>
+        <g data-hero-hide="1" style="transform-box:fill-box;transform-origin:center;animation:tqAsk 7s linear 0s infinite;">
+          <circle cx="610" cy="216" r="30" fill="var(--amber-500)" stroke="var(--ink-900)" stroke-width="2.5"></circle>
+          <text x="610" y="230" text-anchor="middle" font-family="Anton, sans-serif" font-size="36" fill="var(--ink-900)">?</text>
+        </g>
+        <g data-hero-badge="1" style="display:none;transform-box:fill-box;transform-origin:left center;animation:tqPopIn 420ms var(--ease-bounce) both;">
+          <circle data-hero-badge-ring="1" cx="46" cy="46" r="24" fill="var(--blue-100)" stroke="var(--ink-900)" stroke-width="2.5"></circle>
+          <text data-hero-badge-glyph="1" x="46" y="57" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="26" font-weight="800" fill="var(--blue-700)">✓</text>
+          <text data-hero-verdict="1" x="80" y="54" font-family="Plus Jakarta Sans, sans-serif" font-size="17" font-weight="800" fill="var(--ink-900)">Good read</text>
+        </g>
+        <text data-hero-hint="1" x="610" y="272" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="var(--ink-500)">Your call</text>
+        <g data-hero-reveal="1" style="display:none;">
+          <g data-hero-rvc="0" stroke="var(--ink-900)" stroke-width="2.5" stroke-linecap="round" style="transform-box:fill-box;transform-origin:bottom;animation:tqRevealIn 620ms var(--ease-bounce) 0s both;">
+            <line x1="576" y1="74" x2="576" y2="126"></line>
+            <rect x="568" y="82" width="16" height="36" rx="2" fill="var(--blue-500)"></rect>
+          </g>
+          <g data-hero-rvc="1" stroke="var(--ink-900)" stroke-width="2.5" stroke-linecap="round" style="transform-box:fill-box;transform-origin:bottom;animation:tqRevealIn 620ms var(--ease-bounce) .18s both;">
+            <line x1="610" y1="74" x2="610" y2="126"></line>
+            <rect x="602" y="82" width="16" height="36" rx="2" fill="var(--blue-500)"></rect>
+          </g>
+          <g data-hero-rvc="2" stroke="var(--ink-900)" stroke-width="2.5" stroke-linecap="round" style="transform-box:fill-box;transform-origin:bottom;animation:tqRevealIn 620ms var(--ease-bounce) .36s both;">
+            <line x1="644" y1="74" x2="644" y2="126"></line>
+            <rect x="636" y="82" width="16" height="36" rx="2" fill="var(--blue-500)"></rect>
+          </g>
+          <text data-hero-rv="label" x="610" y="60" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="600" fill="var(--blue-700)">▲ +4.1%</text>
+        </g>
+      </svg>
+
+      <div style="margin-top:16px;display:grid;gap:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <span style="font-size:14px;font-weight:700;color:var(--ink-900);">{{ heroPrompt }}</span>
+          <sc-if value="{{ revealed }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ onReset }}" style="font-size:13px;font-weight:700;padding:8px 18px;border-radius:var(--radius-pill);border:var(--border-width-thick) solid var(--ink-900);background:var(--paper-0);color:var(--ink-900);cursor:pointer;">{{ replayLabel }}</button>
+          </sc-if>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;">
+          <button data-hero-btn="buy" onClick="{{ onBuy }}" disabled="{{ revealed }}" style="display:flex;align-items:center;justify-content:center;gap:10px;font-family:var(--font-sans);font-weight:800;font-size:15px;letter-spacing:.08em;text-transform:uppercase;padding:15px 18px;border-radius:var(--radius-pill);border:var(--border-width-thick) solid var(--ink-900);background:var(--blue-500);color:var(--paper-0);cursor:pointer;box-shadow:4px 4px 0 0 var(--ink-900);transition:transform var(--duration-fast) var(--ease-out),box-shadow var(--duration-fast) var(--ease-out),opacity var(--duration-base) var(--ease-out);" style-hover="transform:translate(-2px,-2px);box-shadow:6px 6px 0 0 var(--ink-900);" style-active="transform:translate(2px,2px);box-shadow:0 0 0 0 var(--ink-900);">
+            <span style="width:26px;height:26px;flex:0 0 auto;border-radius:var(--radius-pill);background:var(--paper-0);color:var(--blue-700);border:2px solid var(--ink-900);display:inline-flex;align-items:center;justify-content:center;font-size:12px;line-height:1;">▲</span>
+            Buy
+          </button>
+          <button data-hero-btn="wait" onClick="{{ onWait }}" disabled="{{ revealed }}" style="display:flex;align-items:center;justify-content:center;gap:10px;font-family:var(--font-sans);font-weight:800;font-size:15px;letter-spacing:.08em;text-transform:uppercase;padding:15px 18px;border-radius:var(--radius-pill);border:var(--border-width-thick) solid var(--ink-900);background:var(--violet-500);color:var(--paper-0);cursor:pointer;box-shadow:4px 4px 0 0 var(--ink-900);transition:transform var(--duration-fast) var(--ease-out),box-shadow var(--duration-fast) var(--ease-out),opacity var(--duration-base) var(--ease-out);" style-hover="transform:translate(-2px,-2px);box-shadow:6px 6px 0 0 var(--ink-900);" style-active="transform:translate(2px,2px);box-shadow:0 0 0 0 var(--ink-900);">
+            <span style="width:26px;height:26px;flex:0 0 auto;border-radius:var(--radius-pill);background:var(--paper-0);color:var(--violet-500);border:2px solid var(--ink-900);display:inline-flex;align-items:center;justify-content:center;font-size:12px;line-height:1;">—</span>
+            Wait
+          </button>
+          <button data-hero-btn="sell" onClick="{{ onSell }}" disabled="{{ revealed }}" style="display:flex;align-items:center;justify-content:center;gap:10px;font-family:var(--font-sans);font-weight:800;font-size:15px;letter-spacing:.08em;text-transform:uppercase;padding:15px 18px;border-radius:var(--radius-pill);border:var(--border-width-thick) solid var(--ink-900);background:var(--orange-500);color:var(--ink-900);cursor:pointer;box-shadow:4px 4px 0 0 var(--ink-900);transition:transform var(--duration-fast) var(--ease-out),box-shadow var(--duration-fast) var(--ease-out),opacity var(--duration-base) var(--ease-out);" style-hover="transform:translate(-2px,-2px);box-shadow:6px 6px 0 0 var(--ink-900);" style-active="transform:translate(2px,2px);box-shadow:0 0 0 0 var(--ink-900);">
+            <span style="width:26px;height:26px;flex:0 0 auto;border-radius:var(--radius-pill);background:var(--paper-0);color:var(--orange-700);border:2px solid var(--ink-900);display:inline-flex;align-items:center;justify-content:center;font-size:12px;line-height:1;">▼</span>
+            Sell
+          </button>
+        </div>
+
+        <sc-if value="{{ revealed }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--paper-100);border:var(--border-width-thick) solid var(--ink-900);border-radius:24px;padding:16px 20px;animation:tqPopIn 420ms var(--ease-bounce) both;">
+            <x-import component-from-global-scope="TradeQuestDesignSystem_940dde.CandleCallBadge" call="{{ callKey }}" correct="{{ callCorrect }}" hint-size="auto,36px"></x-import>
+            <span style="flex:1 1 220px;font-size:15px;font-weight:600;line-height:1.45;color:var(--ink-900);min-width:200px;">{{ resultText }}</span>
+            <span style="font-family:var(--font-mono);font-size:15px;font-weight:600;color:var(--violet-500);">{{ resultXp }}</span>
+          </div>
+        </sc-if>
+      </div>
+      <p style="margin:14px 4px 0;font-size:12px;color:var(--ink-500);">Historical replay for practice. No live trading, no real funds, not financial advice.</p>
+    </div>
+  </div>
+</section>
+
+<div style="background:var(--amber-500);border-top:var(--border-width-thick) solid var(--ink-900);border-bottom:var(--border-width-thick) solid var(--ink-900);overflow:hidden;padding:16px 0;">
+  <div style="display:flex;width:max-content;animation:tqMarquee 26s linear infinite;">
+    <div style="display:flex;align-items:center;gap:40px;padding-right:40px;font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:34px;color:var(--ink-900);white-space:nowrap;">
+      <span>16 candles</span>
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" style="flex:0 0 auto;animation:tqSpinSticker 2.4s var(--ease-out) infinite alternate;"><rect x="5" y="8" width="8" height="16" rx="2" fill="var(--blue-500)" stroke="var(--ink-900)" stroke-width="2.5"></rect><rect x="17" y="12" width="8" height="12" rx="2" fill="var(--paper-0)" stroke="var(--ink-900)" stroke-width="2.5"></rect></svg>
+      <span>one call</span>
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" style="flex:0 0 auto;animation:tqSpinSticker 3.1s var(--ease-out) infinite alternate;"><path d="M15 3c-4 5-7 7-7 12a7 7 0 0 0 14 0c0-3-1.5-4.5-3-6 .4 3-1 4-2 3-1-2-2-6-2-9Z" fill="var(--orange-500)" stroke="var(--ink-900)" stroke-width="2.5" stroke-linejoin="round"></path></svg>
+      <span>daily streak</span>
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" style="flex:0 0 auto;animation:tqSpinSticker 2.7s var(--ease-out) infinite alternate;"><circle cx="15" cy="15" r="11" fill="var(--mint-500)" stroke="var(--ink-900)" stroke-width="2.5"></circle><path d="M9.5 15.5l4 4 7-8" fill="none" stroke="var(--ink-900)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <span>no real money</span>
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" style="flex:0 0 auto;animation:tqSpinSticker 2.2s var(--ease-out) infinite alternate;"><rect x="4" y="7" width="22" height="16" rx="5" fill="var(--violet-500)" stroke="var(--ink-900)" stroke-width="2.5"></rect><path d="M10 15h10" stroke="var(--paper-0)" stroke-width="3" stroke-linecap="round"></path></svg>
+      <span>+15 XP</span>
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" style="flex:0 0 auto;animation:tqSpinSticker 2.9s var(--ease-out) infinite alternate;"><rect x="5" y="8" width="8" height="16" rx="2" fill="var(--blue-500)" stroke="var(--ink-900)" stroke-width="2.5"></rect><rect x="17" y="12" width="8" height="12" rx="2" fill="var(--paper-0)" stroke="var(--ink-900)" stroke-width="2.5"></rect></svg>
+    </div>
+    <div style="display:flex;align-items:center;gap:40px;padding-right:40px;font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:34px;color:var(--ink-900);white-space:nowrap;" aria-hidden="true">
+      <span>16 candles</span>
+      <svg width="30" height="30" viewBox="0 0 30 30"><rect x="5" y="8" width="8" height="16" rx="2" fill="var(--blue-500)" stroke="var(--ink-900)" stroke-width="2.5"></rect><rect x="17" y="12" width="8" height="12" rx="2" fill="var(--paper-0)" stroke="var(--ink-900)" stroke-width="2.5"></rect></svg>
+      <span>one call</span>
+      <svg width="30" height="30" viewBox="0 0 30 30"><path d="M15 3c-4 5-7 7-7 12a7 7 0 0 0 14 0c0-3-1.5-4.5-3-6 .4 3-1 4-2 3-1-2-2-6-2-9Z" fill="var(--orange-500)" stroke="var(--ink-900)" stroke-width="2.5" stroke-linejoin="round"></path></svg>
+      <span>daily streak</span>
+      <svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="11" fill="var(--mint-500)" stroke="var(--ink-900)" stroke-width="2.5"></circle><path d="M9.5 15.5l4 4 7-8" fill="none" stroke="var(--ink-900)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <span>no real money</span>
+      <svg width="30" height="30" viewBox="0 0 30 30"><rect x="4" y="7" width="22" height="16" rx="5" fill="var(--violet-500)" stroke="var(--ink-900)" stroke-width="2.5"></rect><path d="M10 15h10" stroke="var(--paper-0)" stroke-width="3" stroke-linecap="round"></path></svg>
+      <span>+15 XP</span>
+      <svg width="30" height="30" viewBox="0 0 30 30"><rect x="5" y="8" width="8" height="16" rx="2" fill="var(--blue-500)" stroke="var(--ink-900)" stroke-width="2.5"></rect><rect x="17" y="12" width="8" height="12" rx="2" fill="var(--paper-0)" stroke="var(--ink-900)" stroke-width="2.5"></rect></svg>
+    </div>
+  </div>
+</div>
+
+<section id="how" style="padding:96px 20px;background:var(--surface-page);">
+  <div style="max-width:1120px;margin:0 auto;display:grid;gap:48px;">
+    <div style="display:grid;gap:16px;max-width:720px;">
+      <span style="font-size:13px;font-weight:800;letter-spacing:var(--tracking-caps);text-transform:uppercase;color:var(--text-secondary);">How it works</span>
+      <h2 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:var(--text-display-2);line-height:1;letter-spacing:.01em;margin:0;">Three steps.<br>Five minutes a day.</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;">
+
+      <div data-anim="tqRise 620ms var(--ease-out) both" style="background:var(--blue-500);color:var(--ink-900);border:var(--border-width-thick) solid var(--ink-900);border-radius:28px;padding:28px;box-shadow:var(--shadow-flat-md);display:grid;gap:16px;align-content:start;transition:transform var(--duration-base) var(--ease-out),box-shadow var(--duration-base) var(--ease-out);" style-hover="transform:translate(-3px,-3px);box-shadow:var(--shadow-flat-lg);">
+        <svg viewBox="0 0 120 90" aria-hidden="true" style="width:100%;max-width:180px;height:auto;">
+          <line x1="6" y1="80" x2="114" y2="80" stroke="var(--ink-900)" stroke-width="2.5" stroke-linecap="round"></line>
+          <g stroke="var(--ink-900)" stroke-width="2.5" stroke-linecap="round">
+            <g style="transform-box:fill-box;transform-origin:bottom;animation:tqStep1 5s var(--ease-out) infinite;"><line x1="20" y1="42" x2="20" y2="70"></line><rect x="14" y="48" width="12" height="18" rx="2" fill="var(--paper-0)"></rect></g>
+            <g style="transform-box:fill-box;transform-origin:bottom;animation:tqStep2 5s var(--ease-out) infinite;"><line x1="46" y1="28" x2="46" y2="62"></line><rect x="40" y="34" width="12" height="22" rx="2" fill="var(--ink-900)"></rect></g>
+            <g style="transform-box:fill-box;transform-origin:bottom;animation:tqStep3 5s var(--ease-out) infinite;"><line x1="72" y1="34" x2="72" y2="66"></line><rect x="66" y="40" width="12" height="18" rx="2" fill="var(--paper-0)"></rect></g>
+            <g style="transform-box:fill-box;transform-origin:bottom;animation:tqStep4 5s var(--ease-out) infinite;"><line x1="98" y1="16" x2="98" y2="54"></line><rect x="92" y="22" width="12" height="26" rx="2" fill="var(--ink-900)"></rect></g>
+          </g>
+        </svg>
+        <h3 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:34px;line-height:1;margin:0;">01 · Replay</h3>
+        <p style="margin:0;font-size:16px;line-height:1.5;">Pick a real market from history. Candles arrive one at a time, exactly as they did on the day — no hindsight, no headlines.</p>
+      </div>
+
+      <div data-anim="tqRise 620ms var(--ease-out) 120ms both" style="background:var(--amber-500);color:var(--ink-900);border:var(--border-width-thick) solid var(--ink-900);border-radius:28px;padding:28px;box-shadow:var(--shadow-flat-md);display:grid;gap:16px;align-content:start;transition:transform var(--duration-base) var(--ease-out),box-shadow var(--duration-base) var(--ease-out);" style-hover="transform:translate(-3px,-3px);box-shadow:var(--shadow-flat-lg);">
+        <svg viewBox="0 0 120 90" aria-hidden="true" style="width:100%;max-width:180px;height:auto;">
+          <g stroke="var(--ink-900)" stroke-width="2.5">
+            <g><rect x="8" y="12" width="104" height="20" rx="10" fill="var(--paper-0)"></rect><text x="60" y="26" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="800" stroke="none" fill="var(--ink-900)">BUY ▲</text></g>
+            <g style="animation:tqPressLoop 3.2s var(--ease-out) infinite;"><rect x="8" y="36" width="104" height="20" rx="10" fill="var(--violet-500)"></rect><text x="60" y="50" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="800" stroke="none" fill="var(--paper-0)">WAIT</text></g>
+            <g><rect x="8" y="60" width="104" height="20" rx="10" fill="var(--paper-0)"></rect><text x="60" y="74" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="800" stroke="none" fill="var(--ink-900)">SELL ▼</text></g>
+          </g>
+        </svg>
+        <h3 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:34px;line-height:1;margin:0;">02 · Decide</h3>
+        <p style="margin:0;font-size:16px;line-height:1.5;">Buy, sell or wait. Waiting counts as a call — patience is a skill the scoreboard respects.</p>
+      </div>
+
+      <div data-anim="tqRise 620ms var(--ease-out) 240ms both" style="background:var(--mint-500);color:var(--ink-900);border:var(--border-width-thick) solid var(--ink-900);border-radius:28px;padding:28px;box-shadow:var(--shadow-flat-md);display:grid;gap:16px;align-content:start;transition:transform var(--duration-base) var(--ease-out),box-shadow var(--duration-base) var(--ease-out);" style-hover="transform:translate(-3px,-3px);box-shadow:var(--shadow-flat-lg);">
+        <svg viewBox="0 0 120 90" aria-hidden="true" style="width:100%;max-width:180px;height:auto;">
+          <circle cx="60" cy="45" r="32" fill="var(--paper-0)" stroke="var(--ink-900)" stroke-width="2.5" style="transform-box:fill-box;transform-origin:center;animation:tqThrob 3.4s ease-in-out infinite;"></circle>
+          <path d="M44 46l11 12 22-25" fill="none" stroke="var(--ink-900)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="60" style="--dash:60;stroke-dashoffset:0;animation:tqDrawLoop 3.4s var(--ease-out) infinite;"></path>
+        </svg>
+        <h3 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:34px;line-height:1;margin:0;">03 · Learn</h3>
+        <p style="margin:0;font-size:16px;line-height:1.5;">The next candle reveals itself, and a short explanation names the pattern you just read. Then you go again.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="loop" style="padding:96px 20px;background:var(--ink-900);color:var(--paper-0);">
+  <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:56px;align-items:center;">
+    <div style="display:grid;gap:24px;align-content:start;">
+      <span style="font-size:13px;font-weight:800;letter-spacing:var(--tracking-caps);text-transform:uppercase;color:var(--ink-300);">The daily loop</span>
+      <h2 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:var(--text-display-2);line-height:1;margin:0;">Show up.<br>Keep the streak.</h2>
+      <p style="margin:0;font-size:18px;line-height:1.5;color:var(--ink-100);max-width:46ch;">One session is five minutes. The streak is what turns five minutes into a trained eye — and XP tracks the reading skill, never a balance.</p>
+
+      <div style="display:flex;flex-wrap:wrap;gap:16px;">
+        <div style="background:var(--surface-card);color:var(--text-primary);border:var(--border-width-thick) solid var(--ink-900);border-radius:24px;padding:20px 24px;box-shadow:4px 4px 0 0 var(--orange-500);display:grid;gap:6px;">
+          <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);">Current streak</span>
+          <span style="display:inline-flex;align-items:center;gap:10px;">
+            <svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true" style="flex:0 0 auto;transform-box:fill-box;transform-origin:bottom center;animation:tqFlicker 2.6s ease-in-out infinite;"><path d="M12 2C9 6 6 8 6 13a6 6 0 0 0 12 0c0-2-1-3-2-4 .3 2-.8 3-1.5 2.3C15 10 14 7 12 2Z" fill="var(--streak-flame)" stroke="var(--border-default)" stroke-width="1.5" stroke-linejoin="round"></path></svg>
+            <span style="font-family:var(--font-sans);font-weight:800;font-size:32px;">12 days</span>
+          </span>
+        </div>
+        <div style="background:var(--surface-card);color:var(--text-primary);border:var(--border-width-thick) solid var(--ink-900);border-radius:24px;padding:20px 24px;box-shadow:4px 4px 0 0 var(--violet-500);display:grid;gap:6px;min-width:200px;position:relative;">
+          <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);">Total XP</span>
+          <span style="display:inline-flex;align-items:baseline;gap:8px;">
+            <span data-xp="1240" style="font-family:var(--font-mono);font-weight:600;font-size:32px;">1,240</span>
+            <span style="font-size:14px;font-weight:700;color:var(--violet-500);">+15 today</span>
+          </span>
+          <svg width="60" height="60" viewBox="0 0 60 60" aria-hidden="true" style="position:absolute;top:-14px;right:-10px;pointer-events:none;">
+            <g data-anim="tqBurst 700ms var(--ease-out) 200ms both" style="transform-box:fill-box;transform-origin:center;opacity:0;">
+              <circle cx="30" cy="8" r="3.5" fill="var(--amber-500)" stroke="var(--ink-900)" stroke-width="1.5"></circle>
+              <circle cx="48" cy="22" r="3" fill="var(--mint-500)" stroke="var(--ink-900)" stroke-width="1.5"></circle>
+              <circle cx="14" cy="20" r="2.5" fill="var(--violet-500)" stroke="var(--ink-900)" stroke-width="1.5"></circle>
+              <rect x="42" y="40" width="6" height="6" rx="1.5" fill="var(--blue-500)" stroke="var(--ink-900)" stroke-width="1.5"></rect>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div style="max-width:320px;">
+        <x-import component-from-global-scope="TradeQuestDesignSystem_940dde.XPBar" xp="{{ xpValue }}" max="{{ xpMax }}" level="7" hint-size="100%,58px"></x-import>
+      </div>
+    </div>
+
+    <div style="background:#151022;border:var(--border-width-thick) solid var(--ink-900);border-radius:32px;box-shadow:8px 8px 0 0 var(--mint-500);padding:20px;color:#F5F2FF;display:grid;gap:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <span style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:18px;">TradeQuest</span>
+        <span style="font-family:var(--font-mono);font-size:12px;color:#B3ABCB;">Week 6 · 4 sessions</span>
+      </div>
+      <div style="background:#100C1C;border-radius:20px;padding:16px;display:grid;gap:14px;">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;">
+          <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:var(--tracking-caps);color:#B3ABCB;">This week</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:#B3ABCB;">7 / 7 days</span>
+        </div>
+        <svg viewBox="0 0 320 128" role="img" aria-label="Weekly recap: seven days completed, with a rising accuracy line." style="width:100%;height:auto;display:block;">
+            <text x="25" y="22" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#B3ABCB">M</text>
+            <text x="69" y="22" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#B3ABCB">T</text>
+            <text x="113" y="22" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#B3ABCB">W</text>
+            <text x="157" y="22" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#B3ABCB">T</text>
+            <text x="201" y="22" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#B3ABCB">F</text>
+            <text x="245" y="22" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#B3ABCB">S</text>
+            <text x="289" y="22" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#B3ABCB">S</text>
+            <rect x="8" y="30" width="34" height="34" rx="11" fill="#1E1836" stroke="#3A3155" stroke-width="2"></rect>
+            <g style="transform-box:fill-box;transform-origin:center;animation:tqW1 7s var(--ease-bounce) infinite;">
+              <rect x="8" y="30" width="34" height="34" rx="11" fill="var(--violet-300)" stroke="#F5F2FF" stroke-width="2"></rect>
+              <path d="M17 47 l5 5 l10 -11" fill="none" stroke="var(--ink-900)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+            <rect x="52" y="30" width="34" height="34" rx="11" fill="#1E1836" stroke="#3A3155" stroke-width="2"></rect>
+            <g style="transform-box:fill-box;transform-origin:center;animation:tqW2 7s var(--ease-bounce) infinite;">
+              <rect x="52" y="30" width="34" height="34" rx="11" fill="var(--violet-300)" stroke="#F5F2FF" stroke-width="2"></rect>
+              <path d="M61 47 l5 5 l10 -11" fill="none" stroke="var(--ink-900)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+            <rect x="96" y="30" width="34" height="34" rx="11" fill="#1E1836" stroke="#3A3155" stroke-width="2"></rect>
+            <g style="transform-box:fill-box;transform-origin:center;animation:tqW3 7s var(--ease-bounce) infinite;">
+              <rect x="96" y="30" width="34" height="34" rx="11" fill="var(--violet-300)" stroke="#F5F2FF" stroke-width="2"></rect>
+              <path d="M105 47 l5 5 l10 -11" fill="none" stroke="var(--ink-900)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+            <rect x="140" y="30" width="34" height="34" rx="11" fill="#1E1836" stroke="#3A3155" stroke-width="2"></rect>
+            <g style="transform-box:fill-box;transform-origin:center;animation:tqW4 7s var(--ease-bounce) infinite;">
+              <rect x="140" y="30" width="34" height="34" rx="11" fill="var(--violet-300)" stroke="#F5F2FF" stroke-width="2"></rect>
+              <path d="M149 47 l5 5 l10 -11" fill="none" stroke="var(--ink-900)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+            <rect x="184" y="30" width="34" height="34" rx="11" fill="#1E1836" stroke="#3A3155" stroke-width="2"></rect>
+            <g style="transform-box:fill-box;transform-origin:center;animation:tqW5 7s var(--ease-bounce) infinite;">
+              <rect x="184" y="30" width="34" height="34" rx="11" fill="var(--violet-300)" stroke="#F5F2FF" stroke-width="2"></rect>
+              <path d="M193 47 l5 5 l10 -11" fill="none" stroke="var(--ink-900)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+            <rect x="228" y="30" width="34" height="34" rx="11" fill="#1E1836" stroke="#3A3155" stroke-width="2"></rect>
+            <g style="transform-box:fill-box;transform-origin:center;animation:tqW6 7s var(--ease-bounce) infinite;">
+              <rect x="228" y="30" width="34" height="34" rx="11" fill="var(--violet-300)" stroke="#F5F2FF" stroke-width="2"></rect>
+              <path d="M237 47 l5 5 l10 -11" fill="none" stroke="var(--ink-900)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+            <rect x="272" y="30" width="34" height="34" rx="11" fill="#1E1836" stroke="#3A3155" stroke-width="2"></rect>
+            <g style="transform-box:fill-box;transform-origin:center;animation:tqW7 7s var(--ease-bounce) infinite;">
+              <rect x="272" y="30" width="34" height="34" rx="11" fill="var(--violet-300)" stroke="#F5F2FF" stroke-width="2"></rect>
+              <path d="M281 47 l5 5 l10 -11" fill="none" stroke="var(--ink-900)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+          <text x="8" y="88" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#B3ABCB">ACCURACY</text>
+          <path d="M8 118 L58 112 L108 104 L158 108 L208 96 L258 90 L312 78" fill="none" stroke="var(--mint-500)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="330" style="--dash:330;stroke-dashoffset:0;animation:tqDrawLoop 7s var(--ease-out) infinite;"></path>
+          <circle cx="312" cy="78" r="5" fill="var(--mint-500)" stroke="#100C1C" stroke-width="2" style="transform-box:fill-box;transform-origin:center;animation:tqDot 2.2s ease-in-out infinite;"></circle>
+        </svg>
+      </div>
+      <div style="display:grid;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;animation:tqRowIn 7s var(--ease-out) .2s infinite;">
+          <span style="width:26px;height:26px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-pill);background:#22335E;color:#6FA0FF;font-weight:800;font-size:14px;">✓</span>
+          <span style="flex:1;font-size:14px;font-weight:700;">Higher low</span>
+          <span style="font-size:12px;font-weight:700;color:#B3ABCB;">Read</span>
+          <span style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--violet-300);white-space:nowrap;">+15 XP</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;animation:tqRowIn 7s var(--ease-out) .9s infinite;">
+          <span style="width:26px;height:26px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-pill);background:#2A2444;color:#B3ABCB;font-weight:800;font-size:14px;">—</span>
+          <span style="flex:1;font-size:14px;font-weight:700;">Doji at resistance</span>
+          <span style="font-size:12px;font-weight:700;color:#B3ABCB;">Waited</span>
+          <span style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--violet-300);white-space:nowrap;">+5 XP</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;animation:tqRowIn 7s var(--ease-out) 1.6s infinite;">
+          <span style="width:26px;height:26px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-pill);background:#4A2A1B;color:#FF9257;font-weight:800;font-size:14px;">✕</span>
+          <span style="flex:1;font-size:14px;font-weight:700;">False breakout</span>
+          <span style="font-size:12px;font-weight:700;color:#B3ABCB;">Missed</span>
+          <span style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--violet-300);white-space:nowrap;">+0 XP</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #2A2444;padding-top:14px;">
+        <span style="font-size:14px;font-weight:700;">Seven days straight. Accuracy up 9 points.</span>
+        <span style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--violet-300);white-space:nowrap;">+20 XP</span>
+      </div>
+      <p style="margin:0;font-size:11px;color:#B3ABCB;">Simulated historical data. Not financial advice.</p>
+    </div>
+  </div>
+</section>
+
+<section id="fair" style="padding:96px 20px;background:var(--surface-page);">
+  <div style="max-width:1120px;margin:0 auto;display:grid;gap:48px;">
+    <div style="display:grid;gap:16px;max-width:760px;">
+      <span style="display:inline-flex;align-items:center;gap:8px;width:max-content;font-size:13px;font-weight:800;letter-spacing:var(--tracking-caps);text-transform:uppercase;padding:6px 14px;border-radius:var(--radius-pill);background:var(--violet-100);color:var(--violet-500);">Straight answer</span>
+      <h2 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:var(--text-display-2);line-height:1;margin:0;">Why this isn't gambling</h2>
+      <p style="margin:0;font-size:18px;line-height:1.5;color:var(--text-secondary);max-width:56ch;">There is nothing to stake and nothing to win. TradeQuest is a practice tool for reading charts, and it is built to be honest about that.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(228px,1fr));gap:20px;">
+
+      <div data-anim="tqRise 620ms var(--ease-out) both" style="position:relative;overflow:hidden;background:var(--amber-500);color:var(--ink-900);border:var(--border-width-thick) solid var(--ink-900);border-radius:28px;padding:28px;box-shadow:var(--shadow-flat-md);min-height:400px;display:grid;grid-template-rows:auto 1fr;gap:14px;transition:transform var(--duration-base) var(--ease-out),box-shadow var(--duration-base) var(--ease-out);" style-hover="transform:translate(-3px,-3px);box-shadow:var(--shadow-flat-lg);">
+        <div style="display:grid;gap:10px;">
+          <h3 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:clamp(30px,3.2vw,42px);line-height:.92;margin:0;">It already<br>happened</h3>
+          <p style="margin:0;font-size:15px;font-weight:600;line-height:1.45;max-width:24ch;">Every session replays a market that closed years ago — a record to study, not an outcome to bet on.</p>
+        </div>
+        <svg viewBox="0 0 150 130" aria-hidden="true" style="align-self:end;justify-self:end;width:78%;max-width:190px;height:auto;margin:0 -8px -14px 0;">
+          <g stroke="var(--ink-900)" stroke-width="3.4" stroke-linejoin="round" style="transform-box:fill-box;transform-origin:center bottom;animation:tqSway 4.6s ease-in-out infinite;">
+            <g data-anim="tqStack 520ms var(--ease-bounce) 240ms both">
+              <path d="M24 96 L75 110 L75 122 L24 108 Z" fill="var(--violet-500)"></path>
+              <path d="M75 110 L126 96 L126 108 L75 122 Z" fill="var(--violet-300)"></path>
+              <path d="M75 82 L126 96 L75 110 L24 96 Z" fill="var(--paper-0)"></path>
+            </g>
+            <g data-anim="tqStack 520ms var(--ease-bounce) 130ms both">
+              <path d="M24 78 L75 92 L75 104 L24 90 Z" fill="var(--blue-700)"></path>
+              <path d="M75 92 L126 78 L126 90 L75 104 Z" fill="var(--blue-500)"></path>
+              <path d="M75 64 L126 78 L75 92 L24 78 Z" fill="var(--paper-0)"></path>
+            </g>
+            <g data-anim="tqStack 520ms var(--ease-bounce) 20ms both">
+              <path d="M24 60 L75 74 L75 86 L24 72 Z" fill="var(--ink-700)"></path>
+              <path d="M75 74 L126 60 L126 72 L75 86 Z" fill="var(--ink-500)"></path>
+              <path d="M75 46 L126 60 L75 74 L24 60 Z" fill="var(--paper-0)"></path>
+            </g>
+            <circle cx="75" cy="30" r="24" fill="var(--paper-0)"></circle>
+            <g style="transform-box:fill-box;transform-origin:center;animation:tqRewind 6s linear infinite;">
+              <path d="M75 30 L75 16" fill="none" stroke-linecap="round"></path>
+              <path d="M75 30 L86 36" fill="none" stroke-linecap="round"></path>
+            </g>
+            <path d="M40 22 L30 30 L40 38 Z" fill="var(--orange-500)" style="transform-box:fill-box;transform-origin:center;animation:tqDot 1.6s ease-in-out infinite;"></path>
+          </g>
+        </svg>
+      </div>
+
+      <div data-anim="tqRise 620ms var(--ease-out) 110ms both" style="position:relative;overflow:hidden;background:var(--blue-500);color:var(--ink-900);border:var(--border-width-thick) solid var(--ink-900);border-radius:28px;padding:28px;box-shadow:var(--shadow-flat-md);min-height:400px;display:grid;grid-template-rows:auto 1fr;gap:14px;transition:transform var(--duration-base) var(--ease-out),box-shadow var(--duration-base) var(--ease-out);" style-hover="transform:translate(-3px,-3px);box-shadow:var(--shadow-flat-lg);">
+        <div style="display:grid;gap:10px;">
+          <h3 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:clamp(30px,3.2vw,42px);line-height:.92;margin:0;">Discipline<br>is the score</h3>
+          <p style="margin:0;font-size:15px;font-weight:600;line-height:1.45;max-width:24ch;">XP rewards patient, well-read calls — including the choice to wait. No score is ever shown as money.</p>
+        </div>
+        <svg viewBox="0 0 150 130" aria-hidden="true" style="align-self:end;justify-self:end;width:78%;max-width:190px;height:auto;margin:0 -8px -14px 0;">
+          <g stroke="var(--ink-900)" stroke-width="3.4" stroke-linejoin="round">
+            <path d="M28 104 L75 117 L75 128 L28 115 Z" fill="var(--violet-500)"></path>
+            <path d="M75 117 L122 104 L122 115 L75 128 Z" fill="var(--violet-300)"></path>
+            <path d="M75 91 L122 104 L75 117 L28 104 Z" fill="var(--paper-0)"></path>
+            <g style="transform-box:fill-box;transform-origin:center;animation:tqBob 3.2s ease-in-out infinite;">
+              <path d="M60 64 L54 96 L75 88 L96 96 L90 64 Z" fill="var(--orange-500)"></path>
+              <circle cx="75" cy="52" r="30" fill="var(--amber-500)" style="transform-box:fill-box;transform-origin:center;animation:tqSway 5.2s ease-in-out infinite;"></circle>
+              <circle cx="75" cy="52" r="21" fill="var(--paper-0)"></circle>
+              <path data-anim="tqDraw 640ms var(--ease-out) 420ms both" d="M64 53 L72 62 L87 44" fill="none" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="46" style="--dash:46;stroke-dashoffset:0;"></path>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div data-anim="tqRise 620ms var(--ease-out) 220ms both" style="position:relative;overflow:hidden;background:var(--violet-300);color:var(--ink-900);border:var(--border-width-thick) solid var(--ink-900);border-radius:28px;padding:28px;box-shadow:var(--shadow-flat-md);min-height:400px;display:grid;grid-template-rows:auto 1fr;gap:14px;transition:transform var(--duration-base) var(--ease-out),box-shadow var(--duration-base) var(--ease-out);" style-hover="transform:translate(-3px,-3px);box-shadow:var(--shadow-flat-lg);">
+        <div style="display:grid;gap:10px;">
+          <h3 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:clamp(30px,3.2vw,42px);line-height:.92;margin:0;">No wallet,<br>ever</h3>
+          <p style="margin:0;font-size:15px;font-weight:600;line-height:1.45;max-width:24ch;">No deposit, no payout, no exchange connection. Nothing in the product can move real funds.</p>
+        </div>
+        <svg viewBox="0 0 150 130" aria-hidden="true" style="align-self:end;justify-self:end;width:78%;max-width:190px;height:auto;margin:0 -8px -14px 0;">
+          <g stroke="var(--ink-900)" stroke-width="3.4" stroke-linejoin="round">
+            <g style="transform-box:fill-box;transform-origin:center;transform:rotate(-6deg);animation:tqTilt 4.2s ease-in-out infinite;">
+              <rect x="34" y="58" width="86" height="52" rx="12" fill="var(--blue-500)"></rect>
+              <rect x="46" y="46" width="62" height="26" rx="8" fill="var(--paper-0)"></rect>
+              <rect x="34" y="72" width="86" height="38" rx="10" fill="var(--blue-700)"></rect>
+              <rect x="86" y="82" width="24" height="16" rx="5" fill="var(--amber-500)"></rect>
+            </g>
+            <g data-anim="tqPopIn 460ms var(--ease-bounce) 520ms both" style="transform-box:fill-box;transform-origin:center;">
+              <circle cx="112" cy="42" r="24" fill="var(--orange-500)" style="transform-box:fill-box;transform-origin:center;animation:tqThrob 2.6s ease-in-out infinite;"></circle>
+              <path data-anim="tqDraw 520ms var(--ease-out) 820ms both" d="M103 33 L121 51 M121 33 L103 51" fill="none" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="60" style="--dash:60;stroke-dashoffset:0;"></path>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div data-anim="tqRise 620ms var(--ease-out) 330ms both" style="position:relative;overflow:hidden;background:var(--mint-500);color:var(--ink-900);border:var(--border-width-thick) solid var(--ink-900);border-radius:28px;padding:28px;box-shadow:var(--shadow-flat-md);min-height:400px;display:grid;grid-template-rows:auto 1fr;gap:14px;transition:transform var(--duration-base) var(--ease-out),box-shadow var(--duration-base) var(--ease-out);" style-hover="transform:translate(-3px,-3px);box-shadow:var(--shadow-flat-lg);">
+        <div style="display:grid;gap:10px;">
+          <h3 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:clamp(30px,3.2vw,42px);line-height:.92;margin:0;">Not<br>advice</h3>
+          <p style="margin:0;font-size:15px;font-weight:600;line-height:1.45;max-width:24ch;">We teach you to read a chart. We never tell you what to buy, and we publish no signals.</p>
+        </div>
+        <svg viewBox="0 0 150 130" aria-hidden="true" style="align-self:end;justify-self:end;width:78%;max-width:190px;height:auto;margin:0 -8px -14px 0;">
+          <g stroke="var(--ink-900)" stroke-width="3.4" stroke-linejoin="round">
+            <g data-anim="tqPopIn 460ms var(--ease-bounce) 360ms both" style="transform-box:fill-box;transform-origin:bottom left;">
+              <path d="M22 34 h74 a12 12 0 0 1 12 12 v34 a12 12 0 0 1 -12 12 h-38 l-18 16 v-16 h-18 a12 12 0 0 1 -12 -12 v-34 a12 12 0 0 1 12 -12 Z" fill="var(--paper-0)"></path>
+              <circle cx="59" cy="52" r="5" fill="var(--violet-500)" style="transform-box:fill-box;transform-origin:center;animation:tqDot 1.9s ease-in-out infinite;"></circle>
+              <path d="M59 66 v14" fill="none" stroke-width="6" stroke-linecap="round"></path>
+            </g>
+            <g style="transform-box:fill-box;transform-origin:center;animation:tqBob 3.6s ease-in-out .4s infinite;">
+              <rect x="98" y="86" width="40" height="30" rx="10" fill="var(--violet-500)"></rect>
+              <path d="M106 101 h24" fill="none" stroke="var(--paper-0)" stroke-width="5" stroke-linecap="round"></path>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="waitlist" style="padding:96px 20px;background:var(--violet-500);color:var(--paper-0);border-top:var(--border-width-thick) solid var(--ink-900);border-bottom:var(--border-width-thick) solid var(--ink-900);">
+  <div style="max-width:760px;margin:0 auto;display:grid;gap:24px;justify-items:center;text-align:center;">
+    <h2 style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:var(--text-display-2);line-height:1;margin:0;">Get in on day one</h2>
+    <p style="margin:0;font-size:18px;line-height:1.5;max-width:48ch;">TradeQuest is free and launching soon. Leave your email and we'll send one message when your first replay is ready.</p>
+    <form onSubmit="{{ onSubmit }}" style="display:flex;flex-wrap:wrap;gap:12px;width:100%;max-width:520px;justify-content:center;">
+      <div style="flex:1 1 240px;min-width:240px;">
+        <input type="email" required="{{ true }}" placeholder="you@email.com" aria-label="Email address" style="font-family:var(--font-sans);font-size:15px;padding:14px 20px;border-radius:var(--radius-pill);border:var(--border-width-thick) solid var(--ink-900);background:var(--paper-0);color:var(--ink-900);width:100%;outline:none;"></input>
+      </div>
+      <button type="submit" style="font-size:15px;font-weight:700;padding:14px 28px;border-radius:var(--radius-pill);border:var(--border-width-thick) solid var(--ink-900);background:var(--ink-900);color:var(--paper-0);cursor:pointer;box-shadow:4px 4px 0 0 var(--paper-0);transition:transform var(--duration-fast) var(--ease-out),box-shadow var(--duration-fast) var(--ease-out);" style-hover="transform:translate(-2px,-2px);box-shadow:6px 6px 0 0 var(--paper-0);">Join the waitlist</button>
+    </form>
+    <sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+      <span style="display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700;padding:10px 20px;border-radius:var(--radius-pill);background:var(--mint-500);color:var(--ink-900);border:var(--border-width-thick) solid var(--ink-900);">You're on the list. See you at launch.</span>
+    </sc-if>
+    <p style="margin:0;font-size:13px;opacity:.85;">No spam, one launch email. Historical replay only — no live trading, no real funds, not financial advice.</p>
+  </div>
+</section>
+
+<footer style="background:var(--ink-900);color:var(--ink-100);padding:64px 20px 40px;">
+  <div style="max-width:1120px;margin:0 auto;display:grid;gap:40px;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;">
+      <div style="display:grid;gap:12px;align-content:start;">
+        <span style="font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:28px;color:var(--paper-0);">TradeQuest</span>
+        <p style="margin:0;font-size:14px;line-height:1.5;max-width:30ch;">Practice reading candlestick charts on real market history. Free, on the web.</p>
+      </div>
+      <div style="display:grid;gap:10px;align-content:start;font-size:14px;">
+        <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--ink-300);">Product</span>
+        <a href="#how">How it works</a>
+        <a href="#loop">The daily loop</a>
+        <a href="#waitlist">Waitlist</a>
+      </div>
+      <div style="display:grid;gap:10px;align-content:start;font-size:14px;">
+        <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--ink-300);">Company</span>
+        <a href="#fair">Our position</a>
+        <a href="#top">Privacy</a>
+        <a href="#top">Contact</a>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--ink-700);padding-top:24px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-size:12px;color:var(--ink-300);">
+      <span>© 2026 TradeQuest. All market data is simulated historical replay.</span>
+      <span>No live trading, no real funds, not financial advice.</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;animations&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;}}">
+class Component extends DCLogic {
+  state = { theme: null, submitted: false, xpValue: 340, call: null, scenario: 0 };
+
+  static SCENARIOS = [
+    {
+      pair: 'BTC/USD', tf: '▲ replay · 4h', correct: 'buy',
+      closes: [100,102,101,105,107,105,103,106,110,112,110,108,112,116,114,120,125,128,124],
+      win: 'Nice read — the higher lows kept stacking and the range tightened right before the break.',
+      wait: 'Not wrong, and waiting keeps your record honest — but the higher lows had already made the case.',
+      lose: 'It broke upward. Every low was higher than the last, and that pattern rarely precedes a drop.'
+    },
+    {
+      pair: 'ETH/USD', tf: '▼ replay · 1d', correct: 'sell',
+      closes: [100,104,107,110,113,112,115,114,116,113,115,111,113,109,110,106,99,95,97],
+      win: 'Good call — price kept failing at the same ceiling while each high stepped lower.',
+      wait: 'Fair. Sitting out costs you nothing, but the lower highs were a standing warning.',
+      lose: 'It rolled over. The highs were stepping down and the last retest failed well short.'
+    },
+    {
+      pair: 'SOL/USD', tf: '— replay · 1h', correct: 'wait',
+      closes: [100,101,99,100,102,101,99,100,101,99,101,100,102,100,99,101,101.4,100.5,101.1],
+      win: 'Right call — no trend, no edge. Recognising a range you should sit out is a read in itself.',
+      wait: 'Right call — no trend, no edge. Recognising a range you should sit out is a read in itself.',
+      lose: 'It barely moved. In a range this tight a directional call is a coin flip — waiting was the read.'
+    }
+  ];
+
+  buildGeom(closes) {
+    const min = Math.min(...closes), max = Math.max(...closes), span = (max - min) || 1;
+    const y = p => 270 - ((p - min) / span) * 180;
+    const d = span * 0.035;
+    const cells = closes.map((close, i) => {
+      const open = i === 0 ? closes[0] - span * 0.05 : closes[i - 1];
+      const hi = Math.max(open, close), lo = Math.min(open, close);
+      const top = y(hi), bot = y(lo);
+      return { up: close >= open, bodyY: top, bodyH: Math.max(3, bot - top), wickTop: y(hi + d), wickBot: y(lo - d), hi, lo };
+    });
+    return { cells, y };
+  }
+
+  applyScenario(idx) {
+    const sc = Component.SCENARIOS[idx];
+    const g = this.buildGeom(sc.closes);
+    document.querySelectorAll('#top [data-hero-candle]').forEach((el, i) => {
+      const c = g.cells[i];
+      if (!c) return;
+      const line = el.querySelector('line'), rect = el.querySelector('rect');
+      const x = 24 + i * 34, cx = x + 8;
+      line.setAttribute('x1', cx); line.setAttribute('x2', cx);
+      line.setAttribute('y1', c.wickTop.toFixed(1)); line.setAttribute('y2', c.wickBot.toFixed(1));
+      rect.setAttribute('x', x); rect.setAttribute('y', c.bodyY.toFixed(1)); rect.setAttribute('height', c.bodyH.toFixed(1));
+      if (c.up) {
+        rect.setAttribute('fill', 'var(--blue-500)'); rect.removeAttribute('stroke'); line.removeAttribute('stroke');
+      } else {
+        rect.setAttribute('fill', 'var(--paper-0)'); rect.setAttribute('stroke', 'var(--orange-500)'); line.setAttribute('stroke', 'var(--orange-700)');
+      }
+    });
+
+    let lastTop = 999, lastBot = 0;
+    [0, 1, 2].forEach(k => {
+      const c = g.cells[16 + k];
+      const el = document.querySelector('#top [data-hero-rvc="' + k + '"]');
+      if (!c || !el) return;
+      const line = el.querySelector('line'), rect = el.querySelector('rect');
+      const x = 24 + (16 + k) * 34, cx = x + 8;
+      line.setAttribute('x1', cx); line.setAttribute('x2', cx);
+      line.setAttribute('y1', c.wickTop.toFixed(1)); line.setAttribute('y2', c.wickBot.toFixed(1));
+      rect.setAttribute('x', x); rect.setAttribute('y', c.bodyY.toFixed(1)); rect.setAttribute('height', c.bodyH.toFixed(1));
+      if (c.up) { rect.setAttribute('fill', 'var(--blue-500)'); rect.removeAttribute('stroke'); line.removeAttribute('stroke'); }
+      else { rect.setAttribute('fill', 'var(--paper-0)'); rect.setAttribute('stroke', 'var(--orange-500)'); line.setAttribute('stroke', 'var(--orange-700)'); }
+      lastTop = Math.min(lastTop, c.wickTop); lastBot = Math.max(lastBot, c.wickBot);
+    });
+
+    const label = document.querySelector('#top [data-hero-rv="label"]');
+    if (label) {
+      const pct = (sc.closes[18] - sc.closes[15]) / sc.closes[15] * 100;
+      const up = pct >= 0;
+      label.textContent = (up ? '▲ +' : '▼ ') + pct.toFixed(1) + '%';
+      label.setAttribute('fill', up ? 'var(--blue-700)' : 'var(--orange-700)');
+      label.setAttribute('y', (up ? Math.max(24, lastTop - 14) : Math.min(286, lastBot + 24)).toFixed(1));
+    }
+
+    const sup = document.querySelector('#top [data-hero-trend="support"]');
+    const res = document.querySelector('#top [data-hero-trend="resistance"]');
+    if (sup && res) {
+      const shown = g.cells.slice(0, 16);
+      sup.setAttribute('d', 'M30 ' + (g.y(shown[0].lo) + 12).toFixed(1) + ' L556 ' + (g.y(shown[15].lo) + 12).toFixed(1));
+      res.setAttribute('d', 'M30 ' + (g.y(shown[0].hi) - 12).toFixed(1) + ' L556 ' + (g.y(shown[15].hi) - 12).toFixed(1));
+    }
+
+    const pairEl = document.querySelector('#top [data-hero-pair]');
+    const tfEl = document.querySelector('#top [data-hero-tf]');
+    if (pairEl) pairEl.textContent = sc.pair;
+    if (tfEl) tfEl.textContent = sc.tf;
+  }
+
+
+  heroNodes() {
+    return {
+      candles: document.querySelectorAll('#top [data-hero-candle]'),
+      hides: document.querySelectorAll('#top [data-hero-hide]'),
+      freeze: document.querySelectorAll('#top [data-hero-freeze]'),
+      ghost1: document.querySelector('#top [data-hero-ghost1]'),
+      badge: document.querySelector('#top [data-hero-badge]'),
+      badgeRing: document.querySelector('#top [data-hero-badge-ring]'),
+      badgeGlyph: document.querySelector('#top [data-hero-badge-glyph]'),
+      verdict: document.querySelector('#top [data-hero-verdict]'),
+      hint: document.querySelector('#top [data-hero-hint]'),
+      reveal: document.querySelector('#top [data-hero-reveal]')
+    };
+  }
+
+  makeCall(call) {
+    if (this.state.call) return;
+    const sc = Component.SCENARIOS[this.state.scenario] || Component.SCENARIOS[0];
+    const ok = call === sc.correct ? true : call === 'wait' ? null : false;
+    const n = this.heroNodes();
+    if (!this.heroAnims) this.heroAnims = new Map();
+    [].concat(Array.from(n.candles), Array.from(n.freeze)).forEach(el => {
+      if (!this.heroAnims.has(el)) this.heroAnims.set(el, el.style.animation);
+      el.style.animation = 'none';
+    });
+    n.hides.forEach(el => { el.style.display = 'none'; });
+    n.freeze.forEach(el => { el.style.display = 'none'; });
+    if (n.hint) n.hint.style.display = 'none';
+    if (n.reveal) n.reveal.style.display = '';
+    document.querySelectorAll('#top [data-hero-rvc]').forEach(el => {
+      if (!this.rvAnims) this.rvAnims = new Map();
+      if (!this.rvAnims.has(el)) this.rvAnims.set(el, el.style.animation);
+      el.style.animation = 'none';
+      void el.getBoundingClientRect();
+      el.style.animation = this.rvAnims.get(el);
+    });
+    if (n.badge && n.badgeRing && n.badgeGlyph) {
+      n.badge.style.display = '';
+      n.badgeRing.setAttribute('fill', ok === true ? 'var(--blue-100)' : ok === false ? 'var(--orange-100)' : 'var(--violet-100)');
+      n.badgeGlyph.setAttribute('fill', ok === true ? 'var(--blue-700)' : ok === false ? 'var(--orange-700)' : 'var(--violet-500)');
+      n.badgeGlyph.textContent = ok === true ? '✓' : ok === false ? '✕' : '—';
+      if (n.verdict) n.verdict.textContent = ok === true ? 'Good read' : ok === false ? 'Missed it' : 'Sat it out';
+    }
+    document.querySelectorAll('#top [data-hero-btn]').forEach(b => {
+      if (b.dataset.heroBtn === call) { b.style.outline = '3px solid var(--violet-500)'; b.style.outlineOffset = '3px'; }
+      else { b.style.opacity = '0.35'; }
+    });
+    this.setState({ call });
+  }
+
+  resetCall() {
+    const n = this.heroNodes();
+    const next = (this.state.scenario + 1) % Component.SCENARIOS.length;
+    this.applyScenario(next);
+    [].concat(Array.from(n.candles), Array.from(n.freeze)).forEach(el => {
+      const anim = this.heroAnims && this.heroAnims.has(el) ? this.heroAnims.get(el) : el.style.animation;
+      el.style.animation = 'none';
+      void el.getBoundingClientRect();
+      el.style.animation = anim;
+    });
+    n.hides.forEach(el => { el.style.display = ''; });
+    n.freeze.forEach(el => { el.style.display = ''; });
+    if (n.badge) n.badge.style.display = 'none';
+    if (n.hint) { n.hint.style.display = ''; n.hint.textContent = 'Your call'; }
+    if (n.reveal) n.reveal.style.display = 'none';
+    document.querySelectorAll('#top [data-hero-btn]').forEach(b => { b.style.outline = ''; b.style.opacity = ''; });
+    this.setState({ call: null, scenario: next });
+  }
+
+  get theme() { return this.state.theme ?? this.props.theme ?? 'light'; }
+
+  renderVals() {
+    const sc = Component.SCENARIOS[this.state.scenario] || Component.SCENARIOS[0];
+    const call = this.state.call;
+    let correct, text, xp;
+    if (call) {
+      if (call === sc.correct) { correct = true; text = sc.win; xp = '+15 XP'; }
+      else if (call === 'wait') { correct = undefined; text = sc.wait; xp = '+5 XP'; }
+      else { correct = false; text = sc.lose; xp = '+0 XP'; }
+    }
+    return {
+      theme: this.theme,
+      revealed: !!call,
+      callKey: call || 'buy',
+      callCorrect: correct,
+      resultText: text || '',
+      resultXp: xp || '',
+      heroPrompt: call ? 'Revealed — this is what happened next.' : 'Sixteen candles in. What happens next?',
+      replayLabel: 'Next replay · ' + (Component.SCENARIOS[(this.state.scenario + 1) % Component.SCENARIOS.length].pair),
+      onBuy: () => this.makeCall('buy'),
+      onSell: () => this.makeCall('sell'),
+      onWait: () => this.makeCall('wait'),
+      onReset: () => this.resetCall(),
+      themeGlyph: this.theme === 'dark' ? '☀' : '☾',
+      toggleTheme: () => this.setState({ theme: this.theme === 'dark' ? 'light' : 'dark' }),
+      submitted: this.state.submitted,
+      onSubmit: (e) => { e.preventDefault(); this.setState({ submitted: true }); },
+      xpValue: this.state.xpValue,
+      xpMax: 500
+    };
+  }
+
+  componentDidMount() {
+    const root = this.el || document;
+    this.applyScenario(this.state.scenario);
+    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const animationsOn = (this.props.animations ?? true) && !this.reduced;
+
+    if (!animationsOn) {
+      root.querySelectorAll('[style*="animation"]').forEach(el => { el.style.animation = 'none'; });
+      root.querySelectorAll('[data-anim]').forEach(el => { el.style.opacity = '1'; });
+      this.setState({ xpValue: 340 });
+      return;
+    }
+
+    const targets = root.querySelectorAll('[data-anim], [data-xp]');
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        this.io.unobserve(el);
+        if (el.dataset.anim) { el.style.opacity = ''; el.style.animation = el.dataset.anim; }
+        if (el.dataset.xp) this.tickUp(el, parseInt(el.dataset.xp, 10));
+      });
+    }, { threshold: 0.25, rootMargin: '0px 0px -8% 0px' });
+    targets.forEach(el => {
+      if (el.dataset.anim && !el.style.opacity) el.style.opacity = '0';
+      this.io.observe(el);
+    });
+
+    this.syncNav();
+    this.onResize = () => this.syncNav();
+    window.addEventListener('resize', this.onResize);
+  }
+
+  syncNav() {
+    const links = (this.el || document).querySelector('[data-navlinks]');
+    if (links) links.style.display = window.innerWidth >= 900 ? 'flex' : 'none';
+  }
+
+  tickUp(el, target) {
+    const t0 = performance.now(), dur = 1100;
+    const step = (now) => {
+      const p = Math.min(1, (now - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased).toLocaleString();
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    let xp = 0;
+    const bar = setInterval(() => { xp += 20; this.setState({ xpValue: Math.min(340, xp) }); if (xp >= 340) clearInterval(bar); }, 60);
+    this.barTimer = bar;
+  }
+
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.barTimer) clearInterval(this.barTimer);
+    if (this.onResize) window.removeEventListener('resize', this.onResize);
+  }
+}
+
+</script>
+</body>
+</html>

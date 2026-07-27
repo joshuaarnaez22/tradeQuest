@@ -1,0 +1,381 @@
+/* ---- tokens/colors.css ---- */
+:root {
+  --ink-900: #0b0b0f;
+  --ink-700: #211f2b;
+  --ink-500: #4a4757;
+  --ink-300: #8a8698;
+  --ink-100: #d9d6e0;
+  --paper-0: #ffffff;
+  --paper-50: #faf8f4;
+  --paper-100: #f1eee6;
+
+  --blue-500: #2f6fed;
+  --blue-700: #1e4fc2;
+  --blue-100: #dce7fe;
+
+  --violet-500: #6c4cf1;
+  --violet-300: #c9b8f5;
+  --violet-100: #ede6fc;
+
+  --amber-500: #ffc93c;
+  --amber-700: #e8a400;
+  --amber-100: #fff3d2;
+
+  --orange-500: #ff5a1f;
+  --orange-700: #d63f0c;
+  --orange-100: #ffe1d2;
+
+  --mint-500: #2fd9a8;
+  --mint-700: #149c77;
+  --mint-100: #d8fbf0;
+
+  /* semantic: light mode */
+  --surface-page: var(--paper-50);
+  --surface-card: var(--paper-0);
+  --surface-sunken: var(--paper-100);
+  --surface-inverse: var(--ink-900);
+  --text-primary: var(--ink-900);
+  --text-secondary: var(--ink-500);
+  --text-on-inverse: var(--paper-0);
+  --border-default: var(--ink-900);
+  --border-subtle: var(--ink-100);
+
+  --brand-primary: var(--violet-500);
+  --brand-on-primary: var(--paper-0);
+  --accent-blue: var(--blue-500);
+  --accent-amber: var(--amber-500);
+  --accent-orange: var(--orange-500);
+  --accent-mint: var(--mint-500);
+
+  /* colorblind-safe up/down (never red/green) */
+  --market-up: var(--blue-500);
+  --market-up-strong: var(--blue-700);
+  --market-up-bg: var(--blue-100);
+  --market-down: var(--orange-500);
+  --market-down-strong: var(--orange-700);
+  --market-down-bg: var(--orange-100);
+
+  --xp-fill: var(--violet-500);
+  --streak-flame: var(--orange-500);
+
+  --focus-ring: var(--blue-500);
+  --shadow-color: var(--ink-900);
+}
+[data-theme="dark"] {
+  --surface-page: #151022;
+  --surface-card: #1e1836;
+  --surface-sunken: #100c1c;
+  --surface-inverse: var(--paper-0);
+  --text-primary: #f5f2ff;
+  --text-secondary: #b3abcb;
+  --text-on-inverse: var(--ink-900);
+  --border-default: #3a3155;
+  --border-subtle: #2a2444;
+
+  --brand-primary: var(--violet-300);
+  --brand-on-primary: var(--ink-900);
+  --market-up: #6fa0ff;
+  --market-up-bg: #22335e;
+  --market-down: #ff9257;
+  --market-down-bg: #4a2a1b;
+  --shadow-color: #000000;
+}
+
+/* ---- tokens/typography.css ---- */
+/* font-family values are bound to next/font variables in layout.tsx */
+:root {
+  --text-display-1: clamp(48px, 7vw, 120px);
+  --text-display-2: clamp(32px, 4.5vw, 72px);
+  --text-display-3: clamp(24px, 3vw, 40px);
+  --text-h1: 32px;
+  --text-h2: 24px;
+  --text-h3: 20px;
+  --text-body-lg: 18px;
+  --text-body: 16px;
+  --text-body-sm: 14px;
+  --text-caption: 12px;
+
+  --lh-tight: 0.92;
+  --lh-display: 1;
+  --lh-heading: 1.15;
+  --lh-body: 1.5;
+
+  --tracking-display: 0.01em;
+  --tracking-caps: 0.06em;
+}
+.font-display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--lh-display);
+  transform-origin: left;
+}
+
+/* ---- tokens/spacing.css ---- */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+
+  --container-max: 1200px;
+}
+
+/* ---- tokens/effects.css ---- */
+:root {
+  --shadow-flat-sm: 2px 2px 0 0 var(--shadow-color);
+  --shadow-flat-md: 4px 4px 0 0 var(--shadow-color);
+  --shadow-flat-lg: 6px 6px 0 0 var(--shadow-color);
+  --shadow-soft-md: 0 8px 24px -8px rgba(11, 11, 15, 0.18);
+
+  --border-width-thick: 2.5px;
+  --border-width-hairline: 1px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 420ms;
+}
+
+/* ---- tokens/base.css ---- */
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background: var(--surface-page);
+  overflow-x: hidden;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---- animation keyframes (from TradeQuest Landing source) ---- */
+@keyframes tqCandle {
+  0% { transform: scaleY(0); opacity: 0; }
+  3% { transform: scaleY(1); opacity: 1; }
+  90% { transform: scaleY(1); opacity: 1; }
+  96% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(0); opacity: 0; }
+}
+@keyframes tqGhost {
+  0%, 14% { opacity: 0; }
+  22% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes tqAsk {
+  0%, 16% { opacity: 0; transform: scale(0.6); }
+  24% { opacity: 1; transform: scale(1); }
+  38% { transform: scale(1.14); }
+  52% { transform: scale(1); }
+  66% { transform: scale(1.14); }
+  80% { transform: scale(1); }
+  92% { opacity: 1; }
+  100% { opacity: 0; transform: scale(0.6); }
+}
+@keyframes tqDraw {
+  from { stroke-dashoffset: var(--dash, 800); }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes tqRise {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes tqSlideIn {
+  from { opacity: 0; transform: translateX(-26px) scaleY(0.4); }
+  to { opacity: 1; transform: translateX(0) scaleY(1); }
+}
+@keyframes tqPress {
+  0%, 55% { transform: translateY(0); }
+  70%, 100% { transform: translateY(4px); }
+}
+@keyframes tqMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes tqFlicker {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  45% { transform: scale(1.06, 0.96) rotate(-2deg); }
+  70% { transform: scale(0.97, 1.04) rotate(1.5deg); }
+}
+@keyframes tqBurst {
+  0% { opacity: 0; transform: scale(0.2); }
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.9); }
+}
+@keyframes tqSpinSticker {
+  from { transform: rotate(-8deg); }
+  to { transform: rotate(8deg); }
+}
+@keyframes tqBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+@keyframes tqRewind {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+@keyframes tqStack {
+  from { opacity: 0; transform: translateY(-18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes tqShake {
+  0%, 100% { transform: rotate(-6deg); }
+  20% { transform: rotate(-11deg); }
+  40% { transform: rotate(-1deg); }
+  60% { transform: rotate(-9deg); }
+  80% { transform: rotate(-4deg); }
+}
+@keyframes tqRevealIn {
+  from { opacity: 0; transform: scaleY(0); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+@keyframes tqPopIn {
+  0% { opacity: 0; transform: scale(0.4); }
+  70% { transform: scale(1.12); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes tqDot {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.5); }
+}
+@keyframes tqTilt {
+  0%, 100% { transform: rotate(-6deg) translateY(0); }
+  50% { transform: rotate(-1deg) translateY(-5px); }
+}
+@keyframes tqSway {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50% { transform: rotate(2.5deg); }
+}
+@keyframes tqThrob {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.09) rotate(6deg); }
+}
+@keyframes tqStep1 {
+  0%, 2% { opacity: 0; transform: translateY(14px) scaleY(0.35); }
+  9%, 82% { opacity: 1; transform: translateY(0) scaleY(1); }
+  90%, 100% { opacity: 0; transform: translateY(14px) scaleY(0.35); }
+}
+@keyframes tqStep2 {
+  0%, 16% { opacity: 0; transform: translateY(14px) scaleY(0.35); }
+  23%, 82% { opacity: 1; transform: translateY(0) scaleY(1); }
+  90%, 100% { opacity: 0; transform: translateY(14px) scaleY(0.35); }
+}
+@keyframes tqStep3 {
+  0%, 30% { opacity: 0; transform: translateY(14px) scaleY(0.35); }
+  37%, 82% { opacity: 1; transform: translateY(0) scaleY(1); }
+  90%, 100% { opacity: 0; transform: translateY(14px) scaleY(0.35); }
+}
+@keyframes tqStep4 {
+  0%, 44% { opacity: 0; transform: translateY(14px) scaleY(0.35); }
+  51%, 82% { opacity: 1; transform: translateY(0) scaleY(1); }
+  90%, 100% { opacity: 0; transform: translateY(14px) scaleY(0.35); }
+}
+@keyframes tqPressLoop {
+  0%, 38% { transform: translateY(0); }
+  52%, 74% { transform: translateY(4px); }
+  88%, 100% { transform: translateY(0); }
+}
+@keyframes tqW1 {
+  0%, 3% { opacity: 0; transform: scale(0.3); }
+  7% { opacity: 1; transform: scale(1.15); }
+  10%, 88% { opacity: 1; transform: scale(1); }
+  94%, 100% { opacity: 0; transform: scale(0.3); }
+}
+@keyframes tqW2 {
+  0%, 10% { opacity: 0; transform: scale(0.3); }
+  14% { opacity: 1; transform: scale(1.15); }
+  17%, 88% { opacity: 1; transform: scale(1); }
+  94%, 100% { opacity: 0; transform: scale(0.3); }
+}
+@keyframes tqW3 {
+  0%, 17% { opacity: 0; transform: scale(0.3); }
+  21% { opacity: 1; transform: scale(1.15); }
+  24%, 88% { opacity: 1; transform: scale(1); }
+  94%, 100% { opacity: 0; transform: scale(0.3); }
+}
+@keyframes tqW4 {
+  0%, 24% { opacity: 0; transform: scale(0.3); }
+  28% { opacity: 1; transform: scale(1.15); }
+  31%, 88% { opacity: 1; transform: scale(1); }
+  94%, 100% { opacity: 0; transform: scale(0.3); }
+}
+@keyframes tqW5 {
+  0%, 31% { opacity: 0; transform: scale(0.3); }
+  35% { opacity: 1; transform: scale(1.15); }
+  38%, 88% { opacity: 1; transform: scale(1); }
+  94%, 100% { opacity: 0; transform: scale(0.3); }
+}
+@keyframes tqW6 {
+  0%, 38% { opacity: 0; transform: scale(0.3); }
+  42% { opacity: 1; transform: scale(1.15); }
+  45%, 88% { opacity: 1; transform: scale(1); }
+  94%, 100% { opacity: 0; transform: scale(0.3); }
+}
+@keyframes tqW7 {
+  0%, 45% { opacity: 0; transform: scale(0.3); }
+  49% { opacity: 1; transform: scale(1.15); }
+  52%, 88% { opacity: 1; transform: scale(1); }
+  94%, 100% { opacity: 0; transform: scale(0.3); }
+}
+@keyframes tqRowIn {
+  0% { opacity: 0; transform: translateX(18px); }
+  8%, 88% { opacity: 1; transform: translateX(0); }
+  96%, 100% { opacity: 0; transform: translateX(18px); }
+}
+@keyframes tqDrawLoop {
+  0% { stroke-dashoffset: var(--dash, 60); }
+  26% { stroke-dashoffset: 0; }
+  84% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: var(--dash, 60); }
+}
+
+/* ---- responsive nav (was a JS resize listener in the source; CSS does this natively) ---- */
+.nav-links {
+  display: none;
+  gap: 4px;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .nav-links {
+    display: flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
