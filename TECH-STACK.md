@@ -1,6 +1,6 @@
 # TradeQuest v1 — Tech Stack
 
-> Scope: whatever [PRD-v1.md](PRD-v1.md) needs and nothing else. UI implementation deferred (Claude design pass later) — this covers framework, data, auth, AI, jobs, and caching.
+> Scope: whatever [PRD-v1.md](docs/planning/PRD-v1.md) needs and nothing else. UI implementation deferred (Claude design pass later) — this covers framework, data, auth, AI, jobs, and caching.
 
 ## Summary
 

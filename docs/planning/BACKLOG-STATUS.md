@@ -8,12 +8,14 @@ Per [PRD-v1.md](PRD-v1.md) §10 and its own philosophy ("if it's not in §3, it'
 
 | Item | Status | Reason |
 |---|---|---|
-| 100-puzzle content library (§7, Phase 10) | ✅ 100/100 real puzzles seeded (2026-07-28) | Data provider: Binance public API (free, no key, real hourly OHLCV) — picked over CoinGecko's free tier because that tier is daily-only and PRD-v1 needs 1H candles. Binance's ToS bans profiting from the data (ads/fees); fine for v1 (free, no ads), **must revisit before monetizing**. 16 hand-picked named events + 84 systematically-discovered real setups across 8 top-volume symbols — see [HANDOFF.md](HANDOFF.md) for the split. |
+| 100-puzzle content library (§7, Phase 10) | ✅ 100/100 real puzzles seeded (2026-07-28) | Data provider: Binance public API (free, no key, real hourly OHLCV) — picked over CoinGecko's free tier because that tier is daily-only and PRD-v1 needs 1H candles. Binance's ToS bans profiting from the data (ads/fees); fine for v1 (free, no ads), **must revisit before monetizing**. 16 hand-picked named events + 84 systematically-discovered real setups across 8 top-volume symbols — see [HANDOFF.md](../HANDOFF.md) for the split. |
 | Streak-reminder emails (Phase 8) | Stubbed, returns 501 | Blocked on a Resend domain the user actually owns/controls DNS for. Deprioritized by user 2026-07-28 — revisit when ready. |
 | Cron cadence (Phase 8) | Not started | Depends on Vercel plan tier (Hobby = daily, Pro = hourly). Deprioritized by user 2026-07-28. |
 | Deploy verification pass (Phase 11) | 🟡 Local done (2026-07-28) | Signed in, solved a real seeded puzzle, correct grade + AI explanation, XP/streak/leaderboard all confirmed in-browser. `tsc --noEmit` + `eslint src` clean. Verifying against a real Vercel deployment (not just `next dev`) still open — cron in particular only runs on a real deployment. |
 
 **So: the real "next step" isn't anything from PRD-vision.md — it's the rows above: more puzzle content, Resend/cron (on hold), and a real deploy verification pass.**
+
+**Update, 2026-07-28, later the same day:** the user overrode this gate on their own judgment — v1 felt too thin (one puzzle a day, no real learning, bare-bones dashboard/leaderboard) to wait on retention data that can't exist yet anyway without a launch. See [V2-PLAN.md](../v2/V2-PLAN.md) for the four pillars picked from the vision doc below, and [LEARNING-PROGRESSION-SPEC.md](../v2/LEARNING-PROGRESSION-SPEC.md) for the first one's detailed design. The gate reasoning below is kept as-is since it's still the right *default* — this was a deliberate, informed exception, not a reason to drop the default for future decisions.
 
 ## Deferred by design (PRD-v1.md §4 — reproduced for reference)
 

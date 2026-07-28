@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # TradeQuest
 
-Marketing/landing page for TradeQuest — replay historical crypto candles, call buy/sell/wait, build a streak. Currently a **frontend-only static page**: no auth, DB, or API wired up yet. Full backend scope (Neon, Drizzle, Clerk, AI SDK, etc.) is planned in [TECH-STACK.md](TECH-STACK.md) but not yet implemented — check there before assuming a piece of infra exists. Product intent lives in [PRD-v1.md](PRD-v1.md) (current scope) and [PRD-vision.md](PRD-vision.md) (long-term backlog).
+Marketing/landing page for TradeQuest — replay historical crypto candles, call buy/sell/wait, build a streak. Currently a **frontend-only static page**: no auth, DB, or API wired up yet. Full backend scope (Neon, Drizzle, Clerk, AI SDK, etc.) is planned in [TECH-STACK.md](TECH-STACK.md) but not yet implemented — check there before assuming a piece of infra exists. Product intent lives in [PRD-v1.md](docs/planning/PRD-v1.md) (current scope) and [PRD-vision.md](docs/planning/PRD-vision.md) (long-term backlog).
 
 ## Structure
 

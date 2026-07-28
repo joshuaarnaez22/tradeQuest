@@ -2,7 +2,7 @@
 
 ## Context
 
-[PRD-v1.md](../PRD-v1.md) and [TECH-STACK.md](../TECH-STACK.md) define what to build and what stack to build it on, but the repo currently contains **only the marketing landing page** — no auth, no database, no puzzle engine, nothing under `src/app/` besides the root layout and the landing page itself. This plan is the bridge from "PRD + stack decision" to a working v1: sign up → solve today's puzzle → get graded with a one-line AI explanation → watch XP/streak update → come back tomorrow, per PRD §10's literal "done" bar.
+[PRD-v1.md](PRD-v1.md) and [TECH-STACK.md](../../TECH-STACK.md) define what to build and what stack to build it on, but the repo currently contains **only the marketing landing page** — no auth, no database, no puzzle engine, nothing under `src/app/` besides the root layout and the landing page itself. This plan is the bridge from "PRD + stack decision" to a working v1: sign up → solve today's puzzle → get graded with a one-line AI explanation → watch XP/streak update → come back tomorrow, per PRD §10's literal "done" bar.
 
 Two things shape how this plan is sequenced rather than just listed as tasks:
 1. **Real blocking dependencies exist.** Auth needs a DB table to sync into; the replay screen needs ported design-system components; the AI explanation needs the grading logic it explains. Phases are ordered by what unblocks what, not by guesswork.
@@ -139,10 +139,10 @@ Multiplayer/guilds/tournaments, historical campaigns, chart-drawing tools, tradi
 
 ## Critical files
 
-- [PRD-v1.md](../PRD-v1.md), [TECH-STACK.md](../TECH-STACK.md)
-- [src/app/globals.css](../src/app/globals.css) — design tokens, reuse as-is
-- [src/app/layout.tsx](../src/app/layout.tsx), [src/app/page.tsx](../src/app/page.tsx) — untouched by this plan
-- [src/components/ui/CandleCallBadge.tsx](../src/components/ui/CandleCallBadge.tsx), [XPBar.tsx](../src/components/ui/XPBar.tsx) — pattern to replicate for the rest of the design-system port
+- [PRD-v1.md](PRD-v1.md), [TECH-STACK.md](../../TECH-STACK.md)
+- [src/app/globals.css](../../src/app/globals.css) — design tokens, reuse as-is
+- [src/app/layout.tsx](../../src/app/layout.tsx), [src/app/page.tsx](../../src/app/page.tsx) — untouched by this plan
+- [src/components/ui/CandleCallBadge.tsx](../../src/components/ui/CandleCallBadge.tsx), [XPBar.tsx](../../src/components/ui/XPBar.tsx) — pattern to replicate for the rest of the design-system port
 - `node_modules/next/dist/docs/01-app/02-guides/upgrading/version-16.md` — source of truth for Next 16 API changes (proxy.ts, async dynamic APIs) referenced throughout
 
 ## Verification

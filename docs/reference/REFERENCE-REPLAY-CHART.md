@@ -1,0 +1,11 @@
+# Reference: the replay chart
+
+`src/components/replay/ReplayChart.tsx` went through several iterations chasing real bugs (not perfectionism — each one was a genuine crash or visual defect). Read this before touching the file again.
+
+1. **Crash**: `series.update()` per-tick depended on lightweight-charts' internal "last time" state, which didn't survive a chart being recreated mid-sequence (React Strict Mode's dev double-invoke, or an HMR remount of an ancestor). Fixed by switching to `series.setData()` (a full snapshot each tick) instead of incremental `update()`.
+2. **Chart resetting your manual drag**: `scrollToRealTime()` was being called on every reveal tick, fighting any manual pan. Removed per-tick auto-scroll — then reintroduced deliberately as a "follow" behavior per a later request, then replaced again with the centering approach below.
+3. **Rescale jump on every tick**: each `setData()` call re-triggered the price axis's `autoScale`. Fixed with an invisible `LineSeries` ("range lock") spanning the full known price range, added once — this holds the Y axis steady while the candlestick series grows underneath it.
+4. **"Too zoomed in" / giant stretched candle**: an earlier attempt locked the *time* axis to the full range via `setVisibleRange` while only 1-2 real bars existed, so the renderer stretched them to fill the space. Removed that lock.
+5. **Current behavior**: history reveals candle-by-candle, kept **centered** in the pane via `setVisibleLogicalRange({from: -margin, to: k-1+margin})` where margin shrinks as more candles arrive (not anchored to an edge). Once revealed, the outcome window reveals the same way, **offset to start only after history's sequence visually finishes** (`historyCandles.length * 70ms` delay) — this was the fix for a flicker bug where an already-decided puzzle (loaded fresh, `revealed=true` from mount) fired both reveal effects concurrently, and they fought over the same series data. The very last tick calls `fitContent()` for a clean edge-to-edge resting frame instead of leftover centering margin.
+
+If this needs more work, read the whole file before changing it — the comments explain *why* each piece exists, and several look redundant until you know what they're preventing.
