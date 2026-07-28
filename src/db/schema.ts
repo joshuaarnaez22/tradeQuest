@@ -1,36 +1,59 @@
-import { pgTable, serial, smallint, text, timestamp, date, jsonb, numeric, integer, boolean, unique } from "drizzle-orm/pg-core";
+import { pgTable, uuid, smallint, text, timestamp, date, jsonb, numeric, integer, boolean, unique, index, pgPolicy } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { authenticatedRole, authUid } from "drizzle-orm/neon/rls";
 
 // Clerk owns identity/session/email. This table holds only what Clerk doesn't.
-export const users = pgTable("users", {
-  id: text("id").primaryKey(), // Clerk user ID
-  displayName: text("display_name"),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  lastReminderSentAt: date("last_reminder_sent_at"), // cron idempotency
-});
+// RLS: a user may only read their own row. Insert/update happen exclusively via
+// the Clerk webhook (src/app/api/webhooks/clerk/route.ts) on the trusted/admin
+// connection, so there's deliberately no modify policy for `authenticated` here
+// — that leaves insert/update/delete denied by RLS's default-deny for that role.
+export const users = pgTable(
+  "users",
+  {
+    id: text("id").primaryKey(), // Clerk user ID
+    displayName: text("display_name"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    lastReminderSentAt: date("last_reminder_sent_at"), // cron idempotency
+  },
+  (table) => [
+    // Phase 8 cron scans for users whose reminder is stale — see route TODO.
+    index("users_last_reminder_sent_at_idx").on(table.lastReminderSentAt),
+    pgPolicy("users_select_own", { for: "select", to: authenticatedRole, using: authUid(table.id) }),
+  ]
+).enableRLS();
 
 // 100 hand-authored rows, seeded once, never mutated by user traffic.
-export const puzzles = pgTable("puzzles", {
-  id: serial("id").primaryKey(),
-  orderIndex: smallint("order_index").notNull().unique(), // drives puzzles[dayOfYear % 100]
-  symbol: text("symbol").notNull(),
-  timeframe: text("timeframe").notNull().default("1H"),
-  candles: jsonb("candles").notNull().$type<{ t: number; open: number; high: number; low: number; close: number; volume: number }[]>(),
-  decisionIndex: smallint("decision_index").notNull(),
-  outcomeWindowCandles: smallint("outcome_window_candles").notNull(),
-  forwardReturnThresholdPct: numeric("forward_return_threshold_pct", { precision: 5, scale: 2 }).notNull(),
-  setupNote: text("setup_note").notNull(), // feeds the AI Mentor explanation prompt
-  isPublished: boolean("is_published").notNull().default(true),
-});
+// RLS: published puzzles are readable by any authenticated player; writes only
+// happen via the seed script (scripts/seed-dev-puzzles.ts) on the admin connection.
+export const puzzles = pgTable(
+  "puzzles",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    orderIndex: smallint("order_index").notNull().unique(), // drives puzzles[dayOfYear % 100]
+    symbol: text("symbol").notNull(),
+    timeframe: text("timeframe").notNull().default("1H"),
+    candles: jsonb("candles").notNull().$type<{ t: number; open: number; high: number; low: number; close: number; volume: number }[]>(),
+    decisionIndex: smallint("decision_index").notNull(),
+    outcomeWindowCandles: smallint("outcome_window_candles").notNull(),
+    forwardReturnThresholdPct: numeric("forward_return_threshold_pct", { precision: 5, scale: 2 }).notNull(),
+    setupNote: text("setup_note").notNull(), // feeds the AI Mentor explanation prompt
+    isPublished: boolean("is_published").notNull().default(true),
+  },
+  (table) => [pgPolicy("puzzles_select_published", { for: "select", to: authenticatedRole, using: sql`${table.isPublished} = true` })]
+).enableRLS();
 
 export const decisionEnum = ["buy", "sell", "wait"] as const;
 export type Decision = (typeof decisionEnum)[number];
 
+// RLS: a user may read and insert only their own attempts. No update/delete
+// policy — graded attempts are immutable game history, so both stay denied by
+// RLS's default-deny for `authenticated`.
 export const attempts = pgTable(
   "attempts",
   {
-    id: serial("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     userId: text("user_id").notNull().references(() => users.id),
-    puzzleId: integer("puzzle_id").notNull().references(() => puzzles.id),
+    puzzleId: uuid("puzzle_id").notNull().references(() => puzzles.id),
     decision: text("decision", { enum: decisionEnum }).notNull(),
     forwardReturnPct: numeric("forward_return_pct", { precision: 6, scale: 2 }).notNull(),
     isCorrect: boolean("is_correct").notNull(),
@@ -42,6 +65,13 @@ export const attempts = pgTable(
   (table) => [
     // One graded attempt per user per calendar day — NOT per puzzle, since
     // puzzles[dayOfYear % 100] legitimately repeats the same puzzle every ~100 days.
+    // Leftmost column (user_id) also covers plain per-user lookups (getUserXp,
+    // getUserStreak, getRecentSessions) — no separate user_id index needed.
     unique("attempts_user_date_unique").on(table.userId, table.attemptDate),
+    // puzzle_id is a bare FK with no other index covering it (leaderboard/stats
+    // group by user_id, not puzzle_id, so the unique index above doesn't help here).
+    index("attempts_puzzle_id_idx").on(table.puzzleId),
+    pgPolicy("attempts_select_own", { for: "select", to: authenticatedRole, using: authUid(table.userId) }),
+    pgPolicy("attempts_insert_own", { for: "insert", to: authenticatedRole, withCheck: authUid(table.userId) }),
   ]
-);
+).enableRLS();
