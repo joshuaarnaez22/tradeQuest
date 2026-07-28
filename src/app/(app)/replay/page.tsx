@@ -11,13 +11,6 @@ export default async function ReplayPage() {
   if (!userId) return null; // (app)/layout.tsx already redirects; defensive only
 
   const db = getDb();
-  const publishedPuzzles = await db.select().from(puzzles).where(eq(puzzles.isPublished, true)).orderBy(puzzles.orderIndex);
-
-  if (publishedPuzzles.length === 0) {
-    return <PhasePlaceholder title="No puzzles yet" note="Run scripts/seed-dev-puzzles.ts to add dev puzzles." />;
-  }
-
-  const puzzle = publishedPuzzles[puzzleIndexForToday(publishedPuzzles.length)];
   const attemptDate = todayUtcDateString();
 
   const [existing] = await db
@@ -25,6 +18,25 @@ export default async function ReplayPage() {
     .from(attempts)
     .where(and(eq(attempts.userId, userId), eq(attempts.attemptDate, attemptDate)))
     .limit(1);
+
+  // An existing attempt pins which puzzle "today" actually was — re-deriving
+  // via puzzleIndexForToday(count) here would drift if the published puzzle
+  // count changes (publish/unpublish) after the attempt was graded, showing
+  // today's *new* puzzle next to the *old* cached grade/explanation.
+  let puzzle;
+  if (existing) {
+    [puzzle] = await db.select().from(puzzles).where(eq(puzzles.id, existing.puzzleId)).limit(1);
+  } else {
+    const publishedPuzzles = await db.select().from(puzzles).where(eq(puzzles.isPublished, true)).orderBy(puzzles.orderIndex);
+    if (publishedPuzzles.length === 0) {
+      return <PhasePlaceholder title="No puzzles yet" note="Run scripts/seed-dev-puzzles.ts to add dev puzzles." />;
+    }
+    puzzle = publishedPuzzles[puzzleIndexForToday(publishedPuzzles.length)];
+  }
+
+  if (!puzzle) {
+    return <PhasePlaceholder title="Puzzle unavailable" note="Today's graded puzzle is no longer published." />;
+  }
 
   const historyCandles = puzzle.candles.slice(0, puzzle.decisionIndex);
   const outcomeCandles = puzzle.candles.slice(puzzle.decisionIndex, puzzle.decisionIndex + puzzle.outcomeWindowCandles);
