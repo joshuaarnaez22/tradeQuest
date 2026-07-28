@@ -88,6 +88,7 @@ export function ReplaySession({
 
       {lesson && !lessonDismissed && (
         <div
+          data-testid="lesson-card"
           style={{
             display: "grid",
             gap: 12,
@@ -103,6 +104,7 @@ export function ReplaySession({
           </h2>
           <p style={{ margin: 0, fontSize: 15, lineHeight: 1.5 }}>{lesson.body}</p>
           <button
+            data-testid="lesson-continue"
             onClick={() => setLessonDismissed(true)}
             style={{
               justifySelf: "start",

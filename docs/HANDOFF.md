@@ -50,6 +50,18 @@ Everything else that used to be blocked (data provider, production Clerk webhook
 | 10 — Content production (100 real puzzles) | ✅ Done — see [REFERENCE-PUZZLE-CONTENT.md](reference/REFERENCE-PUZZLE-CONTENT.md) |
 | 11 — Deploy verification | 🟡 Local done, real Vercel deployment check still open |
 
+## Testing
+
+Playwright e2e tests, one spec file per feature, in `e2e/`: `auth.spec.ts`, `replay.spec.ts`, `learning-progression.spec.ts`, `dashboard.spec.ts`, `leaderboard.spec.ts`. Run via `npm run test:e2e` (or `test:e2e:<feature>` for one file). These run against the real dev server and real Neon dev DB — there's no separate test DB yet — but every test only touches rows it creates itself, dated in the past, cleaned up in `afterAll`.
+
+**One-time setup required before these can run**: a signed-in session saved to `e2e/.auth/user.json`. This is deliberately not something automated — see [e2e/README.md](../e2e/README.md) for the one command you run yourself.
+
+Two separate seed scripts, different purposes:
+- `npm run seed:dummy-data` — 60 fake users (`dummy_user_000`...`dummy_user_059`, never logged into, no Clerk identity) with ~1,000 realistically-graded attempts spread over the last 45 days, so the leaderboard/dashboard have real volume instead of just one real user.
+- `npm run seed:learning-demo` — gives the one real signed-in user 8 deliberate wrong attempts (2 per pattern type, dated yesterday through 8 days ago, never today) so Learning & Progression's lesson card is guaranteed to show on `/replay` for manual testing. Safe to re-run anytime it stops showing (e.g. after solving today's puzzle, or after an e2e run clears it).
+
+Both dry-run by default, `--commit` writes, same convention as the puzzle seed scripts.
+
 ## Reference docs (details that don't need to live in this file)
 
 - [REFERENCE-REPLAY-CHART.md](reference/REFERENCE-REPLAY-CHART.md) — why the chart is built the way it is; read before touching `ReplayChart.tsx` again

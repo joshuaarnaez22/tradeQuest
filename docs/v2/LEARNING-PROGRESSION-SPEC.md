@@ -1,6 +1,6 @@
 # Learning & Progression — Design Spec (v2 pillar #1)
 
-> Status: draft for review. Nothing here is built yet. See [V2-PLAN.md](V2-PLAN.md) for how this fits the wider roadmap.
+> Status: ✅ shipped 2026-07-28, verified in the browser (see [docs/plans/2026-07-28-learning-progression.md](../plans/2026-07-28-learning-progression.md) for how it was built). See [V2-PLAN.md](V2-PLAN.md) for how this fits the wider roadmap.
 
 ## Goal
 

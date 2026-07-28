@@ -6,7 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:e2e": "playwright test",
+    "test:e2e:auth": "playwright test e2e/auth.spec.ts",
+    "test:e2e:replay": "playwright test e2e/replay.spec.ts",
+    "test:e2e:learning": "playwright test e2e/learning-progression.spec.ts",
+    "test:e2e:dashboard": "playwright test e2e/dashboard.spec.ts",
+    "test:e2e:leaderboard": "playwright test e2e/leaderboard.spec.ts",
+    "seed:puzzles": "tsx --env-file=.env.local scripts/seed-puzzles.ts --commit",
+    "seed:dummy-data": "tsx --env-file=.env.local scripts/seed-dummy-data.ts --commit",
+    "seed:pattern-types": "tsx --env-file=.env.local scripts/backfill-pattern-types.ts --commit",
+    "seed:learning-demo": "tsx --env-file=.env.local scripts/seed-learning-progression-demo.ts --commit"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^3.0.14",
@@ -23,12 +33,14 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
+    "tsx": "^4.23.1",
     "typescript": "^5"
   }
 }
