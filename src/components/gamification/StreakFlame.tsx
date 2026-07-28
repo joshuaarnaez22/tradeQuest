@@ -1,6 +1,14 @@
 const SIZES = { sm: 28, md: 40, lg: 56 };
 
-export function StreakFlame({ days = 0, size = "md" }: { days?: number; size?: keyof typeof SIZES }) {
+export function StreakFlame({
+  days = 0,
+  size = "md",
+  showCount = true,
+}: {
+  days?: number;
+  size?: keyof typeof SIZES;
+  showCount?: boolean;
+}) {
   const dim = SIZES[size];
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
@@ -13,7 +21,9 @@ export function StreakFlame({ days = 0, size = "md" }: { days?: number; size?: k
           strokeLinejoin="round"
         />
       </svg>
-      <span style={{ fontFamily: "var(--font-sans)", fontWeight: 800, fontSize: dim * 0.5, color: "var(--text-primary)" }}>{days}</span>
+      {showCount && (
+        <span style={{ fontFamily: "var(--font-sans)", fontWeight: 800, fontSize: dim * 0.5, color: "var(--text-primary)" }}>{days}</span>
+      )}
     </span>
   );
 }

@@ -11,12 +11,14 @@ export function IconButton({
   size = 40,
   variant = "outline",
   label,
+  style,
   onClick,
 }: {
   icon: ReactNode;
   size?: number;
   variant?: keyof typeof VARIANTS;
   label: string;
+  style?: CSSProperties;
   onClick?: () => void;
 }) {
   return (
@@ -34,6 +36,7 @@ export function IconButton({
         cursor: "pointer",
         border: "var(--border-width-thick) solid var(--border-default)",
         ...VARIANTS[variant],
+        ...style,
       }}
     >
       {icon}

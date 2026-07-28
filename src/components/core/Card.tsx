@@ -4,7 +4,7 @@ const TONES: Record<string, CSSProperties> = {
   paper: { background: "var(--surface-card)", color: "var(--text-primary)" },
   inverse: { background: "var(--surface-inverse)", color: "var(--text-on-inverse)" },
   blue: { background: "var(--blue-500)", color: "var(--ink-900)" },
-  violet: { background: "var(--violet-300)", color: "var(--ink-900)" },
+  violet: { background: "var(--violet-500)", color: "var(--paper-0)" },
   amber: { background: "var(--amber-500)", color: "var(--ink-900)" },
   mint: { background: "var(--mint-500)", color: "var(--ink-900)" },
 };

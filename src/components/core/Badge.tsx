@@ -4,7 +4,7 @@ const TONES: Record<string, CSSProperties> = {
   neutral: { background: "var(--surface-sunken)", color: "var(--text-primary)" },
   up: { background: "var(--market-up-bg)", color: "var(--market-up-strong)" },
   down: { background: "var(--market-down-bg)", color: "var(--market-down-strong)" },
-  brand: { background: "var(--violet-100)", color: "var(--violet-500)" },
+  brand: { background: "var(--brand-subtle-bg)", color: "var(--brand-subtle-fg)" },
 };
 
 export function Badge({ tone = "neutral", children }: { tone?: keyof typeof TONES; children?: ReactNode }) {

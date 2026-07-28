@@ -19,18 +19,41 @@ export function AppNav() {
     <nav
       style={{
         display: "flex",
+        flexWrap: "wrap",
         gap: 16,
+        rowGap: 10,
         alignItems: "center",
         padding: "16px 24px",
-        borderBottom: "var(--border-width-thick) solid var(--border-default)",
+        background: "var(--surface-card)",
+        borderBottom: "var(--border-width-thick) solid var(--violet-500)",
+        boxShadow: "var(--shadow-flat-sm)",
       }}
     >
-      <IconButton label="TradeQuest" icon={<span style={{ fontWeight: 900, fontSize: 12 }}>TQ</span>} size={36} />
-      {LINKS.map((l) => (
-        <Link key={l.href} href={l.href} style={{ textDecoration: "none" }}>
-          <Tag outlined={pathname === l.href}>{l.label}</Tag>
-        </Link>
-      ))}
+      <Link href="/replay" aria-label="TradeQuest home" style={{ display: "inline-flex" }}>
+        <IconButton
+          label="TradeQuest"
+          icon={<span className="font-display" style={{ fontSize: 13, letterSpacing: 0 }}>TQ</span>}
+          size={36}
+          style={{
+            background: "var(--violet-500)",
+            color: "var(--paper-0)",
+            borderColor: "var(--violet-500)",
+            boxShadow: "var(--shadow-flat-sm)",
+          }}
+        />
+      </Link>
+      <span style={{ display: "flex", flexWrap: "wrap", gap: 16, rowGap: 10 }}>
+        {LINKS.map((l) => {
+          const active = pathname === l.href;
+          return (
+            <Link key={l.href} href={l.href} aria-current={active ? "page" : undefined} style={{ textDecoration: "none" }}>
+              <Tag outlined={!active} style={active ? { background: "var(--violet-500)", color: "var(--paper-0)" } : undefined}>
+                {l.label}
+              </Tag>
+            </Link>
+          );
+        })}
+      </span>
       <span style={{ marginLeft: "auto" }}>
         <UserButton />
       </span>

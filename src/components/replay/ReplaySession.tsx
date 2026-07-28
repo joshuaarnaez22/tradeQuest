@@ -65,14 +65,45 @@ export function ReplaySession({
 
   return (
     <div style={{ maxWidth: 1120, margin: "0 auto", padding: "24px 20px 64px", display: "grid", gap: 20 }}>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
-        <span style={{ fontFamily: "var(--font-mono)", fontSize: 15, fontWeight: 600 }}>{symbol}</span>
-        <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{timeframe} replay</span>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 14, flexWrap: "wrap" }}>
+        <h1 className="font-display" style={{ fontSize: "var(--text-display-3)", margin: 0 }}>
+          {symbol}
+        </h1>
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 12,
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "var(--tracking-caps)",
+            color: "var(--text-secondary)",
+          }}
+        >
+          {timeframe} replay
+        </span>
       </div>
 
       <ReplayChart historyCandles={historyCandles} outcomeCandles={outcomeCandles} revealed={revealed} />
 
       {!revealed && <DecisionControls onDecide={handleDecide} disabled={pending} pending={pending ? decision : null} />}
+
+      {revealed && !result && (
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "16px 20px" }}>
+          <span
+            aria-hidden
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: "var(--radius-pill)",
+              background: "var(--violet-500)",
+              animation: "tqDot 1.1s ease-in-out infinite",
+            }}
+          />
+          <span style={{ fontSize: 13, color: "var(--text-secondary)" }} role="status">
+            Grading your call…
+          </span>
+        </div>
+      )}
 
       {revealed && result && decision && (
         <motion.div
@@ -88,6 +119,7 @@ export function ReplaySession({
             border: "var(--border-width-thick) solid var(--border-default)",
             borderRadius: 24,
             padding: "16px 20px",
+            boxShadow: "var(--shadow-flat-md)",
           }}
         >
           <CandleCallBadge call={decision} correct={result.isCorrect} />
@@ -100,7 +132,7 @@ export function ReplaySession({
         </motion.div>
       )}
 
-      {revealed && <p style={{ margin: 0, fontSize: 13, color: "var(--text-secondary)" }}>Come back tomorrow for the next puzzle.</p>}
+      {revealed && result && <p style={{ margin: 0, fontSize: 13, color: "var(--text-secondary)" }}>Come back tomorrow for the next puzzle.</p>}
 
       <SimulatedDataBanner />
     </div>

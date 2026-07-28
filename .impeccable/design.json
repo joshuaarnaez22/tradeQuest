@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-28T00:00:00Z",
+  "title": "Design System: TradeQuest",
+  "extensions": {
+    "colorMeta": {
+      "violet-500": { "role": "primary", "displayName": "Brand Violet", "canonical": "#6c4cf1", "tonalRamp": ["#150d2e", "#241a4d", "#3a2a79", "#5138a6", "#6c4cf1", "#8f72f4", "#b6a0f8", "#ede6fc"] },
+      "blue-500": { "role": "secondary", "displayName": "Signal Blue (market up)", "canonical": "#2f6fed", "tonalRamp": ["#0a1a3d", "#122d63", "#1e4fc2", "#2560db", "#2f6fed", "#5c8ff1", "#94b6f7", "#dce7fe"] },
+      "orange-500": { "role": "secondary", "displayName": "Signal Orange (market down)", "canonical": "#ff5a1f", "tonalRamp": ["#3d1305", "#63200a", "#a3350f", "#d63f0c", "#ff5a1f", "#ff8452", "#ffb08a", "#ffe1d2"] },
+      "amber-500": { "role": "tertiary", "displayName": "Amber", "canonical": "#ffc93c", "tonalRamp": ["#3d2f05", "#634c08", "#a37d0e", "#e8a400", "#ffc93c", "#ffd868", "#ffe89a", "#fff3d2"] },
+      "mint-500": { "role": "tertiary", "displayName": "Mint", "canonical": "#2fd9a8", "tonalRamp": ["#082e24", "#0f4d3d", "#149c77", "#1cb98f", "#2fd9a8", "#5fe4c0", "#95efd7", "#d8fbf0"] },
+      "ink-900": { "role": "neutral", "displayName": "Deep Ink", "canonical": "#0b0b0f", "tonalRamp": ["#0b0b0f", "#211f2b", "#4a4757", "#8a8698", "#d9d6e0", "#e8e6ee", "#f4f3f7", "#ffffff"] },
+      "paper-50": { "role": "neutral", "displayName": "Paper", "canonical": "#faf8f4", "tonalRamp": ["#0b0b0f", "#4a4757", "#8a8698", "#d9d6e0", "#f1eee6", "#faf8f4", "#fdfcfa", "#ffffff"] },
+      "surface-page-dark": { "role": "neutral", "displayName": "Chart Room Violet-Black", "canonical": "#151022", "tonalRamp": ["#0a0812", "#100c1c", "#151022", "#1e1836", "#2a2444", "#3a3155", "#b3abcb", "#f5f2ff"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headlines only, uppercase + italic via .font-display." },
+      "headline": { "displayName": "Headline", "purpose": "Section headers." },
+      "title": { "displayName": "Title", "purpose": "Card and module titles." },
+      "body": { "displayName": "Body", "purpose": "Paragraph copy, cap 65-75ch." },
+      "label": { "displayName": "Label", "purpose": "Tags, captions, mono data labels." }
+    },
+    "shadows": [
+      { "name": "flat-sm", "value": "2px 2px 0 0 var(--shadow-color)", "purpose": "Default offset shadow for small interactive elements." },
+      { "name": "flat-md", "value": "4px 4px 0 0 var(--shadow-color)", "purpose": "Cards and mid-size components." },
+      { "name": "flat-lg", "value": "6px 6px 0 0 var(--shadow-color)", "purpose": "Hero-level or featured elements." },
+      { "name": "soft-md", "value": "0 8px 24px -8px rgba(11, 11, 15, 0.18)", "purpose": "Rare genuine elevation; not the default." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default easing for reveals and transitions (EASE_OUT in src/lib/motion.ts)." },
+      { "name": "ease-bounce", "value": "cubic-bezier(0.34, 1.56, 0.64, 1)", "purpose": "Playful overshoot for gamified moments (EASE_BOUNCE in src/lib/motion.ts)." },
+      { "name": "duration-fast", "value": "120ms", "purpose": "Micro-interactions (tap feedback)." },
+      { "name": "duration-base", "value": "200ms", "purpose": "Standard UI transitions." },
+      { "name": "duration-slow", "value": "420ms", "purpose": "Reveal-on-scroll and larger compositional moves." }
+    ],
+    "breakpoints": [
+      { "name": "nav-desktop", "value": "900px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Default high-contrast CTA; inverse surface, pill shape, thick border.",
+      "html": "<button class=\"ds-btn-primary\">Start your first replay</button>",
+      "css": ".ds-btn-primary { font-family: var(--font-sans); font-weight: 700; font-size: 15px; border-radius: 999px; padding: 12px 24px; border: 2.5px solid var(--border-default); background: var(--surface-inverse); color: var(--text-on-inverse); display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: transform 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { transform: translateY(-1px); } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }"
+    },
+    {
+      "name": "Accent Button",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "Brand-violet CTA reserved for the single most important action on a screen.",
+      "html": "<button class=\"ds-btn-accent\">Join the waitlist</button>",
+      "css": ".ds-btn-accent { font-family: var(--font-sans); font-weight: 700; font-size: 15px; border-radius: 999px; padding: 12px 24px; border: 2.5px solid var(--border-default); background: var(--brand-primary); color: var(--brand-on-primary); display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: transform 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-accent:active { transform: translateY(1px); } .ds-btn-accent:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }"
+    },
+    {
+      "name": "Icon Button",
+      "kind": "button",
+      "refersTo": "icon-button-outline",
+      "description": "Circular button for compact actions; squeezes on tap.",
+      "html": "<button class=\"ds-icon-btn\" aria-label=\"Play\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M4 2L14 8L4 14V2Z\" fill=\"currentColor\"/></svg></button>",
+      "css": ".ds-icon-btn { width: 40px; height: 40px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border: 2.5px solid var(--border-default); background: var(--surface-card); color: var(--text-primary); transition: transform 120ms cubic-bezier(0.16,1,0.3,1); } .ds-icon-btn:active { transform: scale(0.92); } .ds-icon-btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card-paper",
+      "description": "Flat tone-block container, thick border, no gradient.",
+      "html": "<div class=\"ds-card\"><p>Card content</p></div>",
+      "css": ".ds-card { background: var(--surface-card); color: var(--text-primary); border-radius: 24px; padding: 24px; border: 2.5px solid var(--border-default); }"
+    },
+    {
+      "name": "Tag (outlined)",
+      "kind": "chip",
+      "refersTo": "tag-outlined",
+      "description": "Pill-shaped label, outlined by default.",
+      "html": "<span class=\"ds-tag\">16 candles</span>",
+      "css": ".ds-tag { display: inline-flex; align-items: center; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 999px; border: 2px solid var(--border-default); background: transparent; color: var(--text-primary); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Chart Room",
+    "overview": "TradeQuest reads like a focused, after-hours study room for charts — not a casino floor, not a generic fintech dashboard. The default surface is a deep violet-black (#151022) that puts candle motion and typography in the spotlight, with a maintained light-mode counterpart (#faf8f4) that stays equally deliberate rather than an afterthought. UI elements are drawn with confidence: thick 2.5px borders, pill-shaped buttons, and flat offset shadows that read like panels stacked on a desk, not glass floating above it. The tone is confident, precise, and honest — copy and interface alike are comfortable stating plain facts (\"Not advice\", \"No wallet, ever\") rather than dressing up hype. The one deliberately playful layer is gamification: XP fills, streak flames, and tactile press feedback on buttons. Everything else — color discipline (colorblind-safe blue/orange market state, never red/green), flat construction, and blunt typography — stays serious. This is a practice tool that respects the user's intelligence.",
+    "keyCharacteristics": [
+      "Deep violet-black dark mode as the primary surface, with a fully realized cream/ink light mode as an equal citizen",
+      "Thick, hand-drawn-confident borders (2.5px) on every interactive shape",
+      "Flat, comic-panel offset shadows instead of blurred elevation",
+      "Anton display type (uppercase, italic, condensed) for headlines against a humanist Plus Jakarta Sans body",
+      "IBM Plex Mono reserved for data, labels, and ticker-style content",
+      "Colorblind-safe market state: blue for up, orange for down — never red/green"
+    ],
+    "rules": [
+      { "name": "The Never Red/Green Rule", "body": "Market up/down state is always rendered in blue/orange. Red/green is reserved for nothing in this system — it reads as generic finance-app gambling cues, which directly contradicts the 'not gambling' brand position.", "section": "colors" },
+      { "name": "The One Display Voice Rule", "body": "Anton is reserved for the .font-display treatment (uppercase, italic, tight line-height) — never set in mixed case or without italic, or it loses the shouting quality that makes it legible as 'this is a headline, not a UI label.'", "section": "typography" },
+      { "name": "The Panel, Not Glass Rule", "body": "Depth is drawn with hard offset shadows and thick borders, never blur or backdrop-filter as a default. If something needs to look 'elevated,' give it a harder offset shadow or a thicker border before reaching for blur.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use blue/orange exclusively for market up/down state — never red/green.",
+      "Do keep borders thick (2.5px) on every interactive and card element; a thin border reads as an error state, not a stylistic choice.",
+      "Do use flat offset shadows (no blur) as the default elevation language; reserve the soft ambient shadow for rare genuine lift.",
+      "Do reserve Anton/.font-display for headline-scale text, always uppercase + italic — never body copy.",
+      "Do respect prefers-reduced-motion — already enforced globally in globals.css (disables all animation/transition).",
+      "Do match section container width (1120px or 1400px) to whichever neighboring sections already use, rather than introducing a third value."
+    ],
+    "donts": [
+      "Don't introduce gradients, especially gradient text — flat saturated tone blocks only.",
+      "Don't use glassmorphism or backdrop-filter as a default elevation strategy — this system is flat and graphic, not glass.",
+      "Don't use casino/gambling visual cues (spinning wheels, jackpot flourishes, coin/chip imagery) — directly contradicts the 'not gambling' brand position.",
+      "Don't set Anton in mixed case or without italic — it loses its shouting headline quality.",
+      "Don't reference --font-display-raw / --font-sans-raw / --font-mono-raw directly in new code — always use the re-exposed --font-display / --font-sans / --font-mono."
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "motion/react";
 
 const liftTransition = { duration: 0.12, ease: [0.16, 1, 0.3, 1] as const };
@@ -60,6 +61,9 @@ export function Nav({
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <Link href="/sign-in" style={navLinkStyle}>
+            Sign in
+          </Link>
           <motion.button
             onClick={onToggleTheme}
             aria-label="Toggle dark mode"

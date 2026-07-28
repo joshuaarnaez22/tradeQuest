@@ -17,6 +17,7 @@ export function Button({
   icon = null,
   disabled = false,
   type = "button",
+  style,
   children,
   onClick,
 }: {
@@ -25,6 +26,7 @@ export function Button({
   icon?: ReactNode;
   disabled?: boolean;
   type?: "button" | "submit";
+  style?: CSSProperties;
   children?: ReactNode;
   onClick?: () => void;
 }) {
@@ -47,6 +49,7 @@ export function Button({
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.45 : 1,
         ...VARIANTS[variant],
+        ...style,
       }}
     >
       {icon}

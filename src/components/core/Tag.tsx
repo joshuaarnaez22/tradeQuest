@@ -1,6 +1,14 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
-export function Tag({ children, outlined = true }: { children?: ReactNode; outlined?: boolean }) {
+export function Tag({
+  children,
+  outlined = true,
+  style,
+}: {
+  children?: ReactNode;
+  outlined?: boolean;
+  style?: CSSProperties;
+}) {
   return (
     <span
       style={{
@@ -13,6 +21,7 @@ export function Tag({ children, outlined = true }: { children?: ReactNode; outli
         border: outlined ? "2px solid var(--border-default)" : "none",
         background: outlined ? "transparent" : "var(--surface-sunken)",
         color: "var(--text-primary)",
+        ...style,
       }}
     >
       {children}

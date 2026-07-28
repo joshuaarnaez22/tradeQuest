@@ -42,6 +42,8 @@
 
   --brand-primary: var(--violet-500);
   --brand-on-primary: var(--paper-0);
+  --brand-subtle-bg: var(--violet-100);
+  --brand-subtle-fg: var(--violet-500);
   --accent-blue: var(--blue-500);
   --accent-amber: var(--amber-500);
   --accent-orange: var(--orange-500);
@@ -72,12 +74,18 @@
   --border-default: #3a3155;
   --border-subtle: #2a2444;
 
-  --brand-primary: var(--violet-300);
-  --brand-on-primary: var(--ink-900);
+  --brand-primary: var(--violet-500);
+  --brand-on-primary: var(--paper-0);
+  --brand-subtle-bg: #241a4d;
+  --brand-subtle-fg: #b6a0f8;
   --market-up: #6fa0ff;
   --market-up-bg: #22335e;
+  /* light-mode --market-up-strong (--blue-700) reads ~1.7:1 on this dark bg — reuse
+     the already dark-tuned --market-up value so badge text clears WCAG AA (4.5:1) */
+  --market-up-strong: #6fa0ff;
   --market-down: #ff9257;
   --market-down-bg: #4a2a1b;
+  --market-down-strong: #ff9257;
   --shadow-color: #000000;
 }
 
