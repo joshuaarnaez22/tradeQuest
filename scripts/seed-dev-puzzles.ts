@@ -3,6 +3,7 @@
 // Replaced entirely once Phase 10's real seed script runs against real OHLCV.
 import { getDb } from "../src/db";
 import { puzzles } from "../src/db/schema";
+import { classifyPatternType } from "../src/lib/pattern-type";
 
 type RawPuzzle = {
   orderIndex: number;
@@ -61,17 +62,25 @@ const RAW: RawPuzzle[] = [
 
 async function main() {
   const db = getDb();
-  const rows = RAW.map((p) => ({
-    orderIndex: p.orderIndex,
-    symbol: p.symbol,
-    timeframe: "1H",
-    candles: closesToCandles(p.closes),
-    decisionIndex: p.decisionIndex,
-    outcomeWindowCandles: p.outcomeWindowCandles,
-    forwardReturnThresholdPct: p.forwardReturnThresholdPct.toFixed(2),
-    setupNote: p.setupNote,
-    isPublished: true,
-  }));
+  const rows = RAW.map((p) => {
+    const candles = closesToCandles(p.closes);
+    const decisionClose = candles[p.decisionIndex - 1].close;
+    const outcomeClose = candles[p.decisionIndex + p.outcomeWindowCandles - 1].close;
+    const historyMovePct = ((decisionClose - candles[0].close) / candles[0].close) * 100;
+    const outcomeMovePct = ((outcomeClose - decisionClose) / decisionClose) * 100;
+    return {
+      orderIndex: p.orderIndex,
+      symbol: p.symbol,
+      timeframe: "1H",
+      candles,
+      decisionIndex: p.decisionIndex,
+      outcomeWindowCandles: p.outcomeWindowCandles,
+      forwardReturnThresholdPct: p.forwardReturnThresholdPct.toFixed(2),
+      setupNote: p.setupNote,
+      patternType: classifyPatternType({ historyMovePct, outcomeMovePct, thresholdPct: p.forwardReturnThresholdPct }),
+      isPublished: true,
+    };
+  });
 
   for (const row of rows) {
     await db

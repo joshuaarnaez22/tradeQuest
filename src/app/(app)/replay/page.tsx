@@ -3,6 +3,8 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { attempts, puzzles } from "@/db/schema";
 import { puzzleIndexForToday, todayUtcDateString } from "@/lib/puzzle-of-day";
+import { getStruggleForPatternType } from "@/lib/learning";
+import { LESSONS } from "@/lib/lessons";
 import { ReplaySession } from "@/components/replay/ReplaySession";
 import { PhasePlaceholder } from "@/components/PhasePlaceholder";
 
@@ -38,6 +40,10 @@ export default async function ReplayPage() {
     return <PhasePlaceholder title="Puzzle unavailable" note="Today's graded puzzle is no longer published." />;
   }
 
+  // Only worth checking (and only meaningful) for a fresh puzzle — an
+  // already-graded today doesn't need a lesson gate in front of it.
+  const lesson = !existing && (await getStruggleForPatternType(userId, puzzle.patternType)) ? LESSONS[puzzle.patternType] : null;
+
   const historyCandles = puzzle.candles.slice(0, puzzle.decisionIndex);
   const outcomeCandles = puzzle.candles.slice(puzzle.decisionIndex, puzzle.decisionIndex + puzzle.outcomeWindowCandles);
 
@@ -47,6 +53,7 @@ export default async function ReplayPage() {
       timeframe={puzzle.timeframe}
       historyCandles={historyCandles}
       outcomeCandles={outcomeCandles}
+      lesson={lesson}
       initialDecision={existing?.decision ?? null}
       initialResult={
         existing

@@ -15,6 +15,7 @@
 import { getDb } from "../src/db";
 import { puzzles } from "../src/db/schema";
 import { gradeDecision } from "../src/lib/grading";
+import { classifyPatternType } from "../src/lib/pattern-type";
 
 type Entry = {
   orderIndex: number;
@@ -1168,6 +1169,8 @@ async function main() {
       thresholdPct: entry.forwardReturnThresholdPct,
     });
     const correctCall = forwardReturnPct >= entry.forwardReturnThresholdPct ? "BUY" : forwardReturnPct <= -entry.forwardReturnThresholdPct ? "SELL" : "WAIT";
+    const historyMovePct = ((decisionClose - candles[0].close) / candles[0].close) * 100;
+    const patternType = classifyPatternType({ historyMovePct, outcomeMovePct: forwardReturnPct, thresholdPct: entry.forwardReturnThresholdPct });
 
     console.log(
       `#${entry.orderIndex} ${entry.symbol.padEnd(8)} ${entry.startTime}  fwd=${forwardReturnPct.toFixed(2)}%  correct=${correctCall}`
@@ -1184,6 +1187,7 @@ async function main() {
       outcomeWindowCandles: entry.outcomeWindowCandles,
       forwardReturnThresholdPct: entry.forwardReturnThresholdPct.toFixed(2),
       setupNote: entry.setupNote,
+      patternType,
       isPublished: true,
     };
     await db!.insert(puzzles).values(row).onConflictDoUpdate({ target: puzzles.orderIndex, set: row });

@@ -28,6 +28,7 @@ export function ReplaySession({
   timeframe,
   historyCandles,
   outcomeCandles,
+  lesson,
   initialDecision,
   initialResult,
 }: {
@@ -35,12 +36,14 @@ export function ReplaySession({
   timeframe: string;
   historyCandles: CandleDatum[];
   outcomeCandles: CandleDatum[];
+  lesson: { title: string; body: string } | null;
   initialDecision: Decision | null;
   initialResult: Result | null;
 }) {
   const [decision, setDecision] = useState<Decision | null>(initialDecision);
   const [result, setResult] = useState<Result | null>(initialResult);
   const [pending, setPending] = useState(false);
+  const [lessonDismissed, setLessonDismissed] = useState(!lesson);
 
   const revealed = decision !== null;
 
@@ -83,11 +86,49 @@ export function ReplaySession({
         </span>
       </div>
 
-      <ReplayChart historyCandles={historyCandles} outcomeCandles={outcomeCandles} revealed={revealed} />
+      {lesson && !lessonDismissed && (
+        <div
+          style={{
+            display: "grid",
+            gap: 12,
+            background: "var(--surface-card)",
+            border: "var(--border-width-thick) solid var(--border-default)",
+            borderRadius: 24,
+            padding: "20px 24px",
+            boxShadow: "var(--shadow-flat-md)",
+          }}
+        >
+          <h2 className="font-display" style={{ fontSize: "var(--text-display-4)", margin: 0 }}>
+            {lesson.title}
+          </h2>
+          <p style={{ margin: 0, fontSize: 15, lineHeight: 1.5 }}>{lesson.body}</p>
+          <button
+            onClick={() => setLessonDismissed(true)}
+            style={{
+              justifySelf: "start",
+              background: "var(--violet-500)",
+              color: "white",
+              border: "none",
+              borderRadius: "var(--radius-pill)",
+              padding: "10px 20px",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Continue to puzzle →
+          </button>
+        </div>
+      )}
 
-      {!revealed && <DecisionControls onDecide={handleDecide} disabled={pending} pending={pending ? decision : null} />}
+      {lessonDismissed && (
+        <>
+          <ReplayChart historyCandles={historyCandles} outcomeCandles={outcomeCandles} revealed={revealed} />
 
-      {revealed && !result && (
+          {!revealed && <DecisionControls onDecide={handleDecide} disabled={pending} pending={pending ? decision : null} />}
+        </>
+      )}
+
+      {lessonDismissed && revealed && !result && (
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "16px 20px" }}>
           <span
             aria-hidden

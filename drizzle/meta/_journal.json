@@ -15,6 +15,13 @@
       "when": 1785224216770,
       "tag": "0001_special_paibok",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785240900155,
+      "tag": "0002_blushing_red_shift",
+      "breakpoints": true
     }
   ]
 }

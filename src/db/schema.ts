@@ -22,6 +22,11 @@ export const users = pgTable(
   ]
 ).enableRLS();
 
+// Derived from each puzzle's own candles (src/lib/pattern-type.ts) — not
+// hand-authored per row.
+export const patternTypeEnum = ["breakout", "trend_continuation", "reversal", "range"] as const;
+export type PatternType = (typeof patternTypeEnum)[number];
+
 // 100 hand-authored rows, seeded once, never mutated by user traffic.
 // RLS: published puzzles are readable by any authenticated player; writes only
 // happen via the seed script (scripts/seed-dev-puzzles.ts) on the admin connection.
@@ -37,6 +42,7 @@ export const puzzles = pgTable(
     outcomeWindowCandles: smallint("outcome_window_candles").notNull(),
     forwardReturnThresholdPct: numeric("forward_return_threshold_pct", { precision: 5, scale: 2 }).notNull(),
     setupNote: text("setup_note").notNull(), // feeds the AI Mentor explanation prompt
+    patternType: text("pattern_type", { enum: patternTypeEnum }).notNull(),
     isPublished: boolean("is_published").notNull().default(true),
   },
   (table) => [pgPolicy("puzzles_select_published", { for: "select", to: authenticatedRole, using: sql`${table.isPublished} = true` })]
