@@ -2,10 +2,14 @@ export function XPBar({
   xp = 0,
   max = 100,
   level,
+  title,
+  unit = "XP",
 }: {
   xp?: number;
   max?: number;
   level?: number;
+  title?: string;
+  unit?: string;
 }) {
   const pct = Math.min(100, Math.round((xp / max) * 100));
   return (
@@ -22,6 +26,7 @@ export function XPBar({
           }}
         >
           Level {level}
+          {title ? ` — ${title}` : ""}
         </div>
       )}
       <div
@@ -44,7 +49,7 @@ export function XPBar({
         />
       </div>
       <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 6 }}>
-        {xp} / {max} XP
+        {xp} / {max} {unit}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
-import { getUserXp, getUserStreak, getRecentSessions } from "@/lib/stats";
+import { getUserXp, getUserStreak, getRecentSessions, getEarnedBadgeIds, getAttemptRecords } from "@/lib/stats";
 import { levelForXp } from "@/lib/xp";
+import { BADGES, currentPeriodProgress } from "@/lib/badges";
 import { Card } from "@/components/core/Card";
 import { StreakFlame } from "@/components/gamification/StreakFlame";
 import { XPBar } from "@/components/ui/XPBar";
@@ -10,8 +11,15 @@ export default async function DashboardPage() {
   const { userId } = await auth();
   if (!userId) return null; // (app)/layout.tsx already redirects; defensive only
 
-  const [xp, streak, sessions] = await Promise.all([getUserXp(userId), getUserStreak(userId), getRecentSessions(userId)]);
-  const { level, xpIntoLevel, xpPerLevel } = levelForXp(xp);
+  const [xp, streak, sessions, earnedBadgeIds, attemptRecords] = await Promise.all([
+    getUserXp(userId),
+    getUserStreak(userId),
+    getRecentSessions(userId),
+    getEarnedBadgeIds(userId),
+    getAttemptRecords(userId),
+  ]);
+  const { level, xpIntoLevel, xpPerLevel, title } = levelForXp(xp);
+  const { weekCount, weekGoal, monthCount, monthGoal } = currentPeriodProgress(attemptRecords);
 
   const correctCount = sessions.filter((s) => s.isCorrect).length;
 
@@ -60,10 +68,69 @@ export default async function DashboardPage() {
             Level progress
           </div>
           <div style={{ marginTop: 12 }}>
-            <XPBar xp={xpIntoLevel} max={xpPerLevel} level={level} />
+            <XPBar xp={xpIntoLevel} max={xpPerLevel} level={level} title={title} />
           </div>
         </Card>
       </div>
+
+      <Card tone="paper" radius="lg" padding={28} style={{ boxShadow: "var(--shadow-flat-md)" }}>
+        <div
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 12,
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "var(--tracking-caps)",
+            color: "var(--text-secondary)",
+            marginBottom: 14,
+          }}
+        >
+          Goals
+        </div>
+        <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+          <div style={{ flex: "1 1 220px" }}>
+            <XPBar xp={Math.min(weekCount, weekGoal)} max={weekGoal} unit="puzzles this week" />
+          </div>
+          <div style={{ flex: "1 1 220px" }}>
+            <XPBar xp={Math.min(monthCount, monthGoal)} max={monthGoal} unit="puzzles this month" />
+          </div>
+        </div>
+      </Card>
+
+      <Card tone="paper" radius="lg" padding={28} style={{ boxShadow: "var(--shadow-flat-md)" }}>
+        <div
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 12,
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "var(--tracking-caps)",
+            color: "var(--text-secondary)",
+            marginBottom: 14,
+          }}
+        >
+          Badges — {earnedBadgeIds.size} / {BADGES.length}
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
+          {BADGES.map((badge) => {
+            const earned = earnedBadgeIds.has(badge.id);
+            return (
+              <div
+                key={badge.id}
+                style={{
+                  padding: "12px 14px",
+                  borderRadius: "var(--radius-md)",
+                  background: earned ? "var(--brand-subtle-bg)" : "var(--surface-sunken)",
+                  opacity: earned ? 1 : 0.55,
+                }}
+              >
+                <div style={{ fontWeight: 700, fontSize: 14 }}>{badge.title}</div>
+                <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 2 }}>{earned ? badge.description : "Not yet earned"}</div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
 
       <Card tone="paper" radius="lg" padding={28} style={{ boxShadow: "var(--shadow-flat-md)" }}>
         <div

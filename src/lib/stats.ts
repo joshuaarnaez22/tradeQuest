@@ -1,6 +1,6 @@
 import { desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { attempts, users } from "@/db/schema";
+import { attempts, users, userBadges } from "@/db/schema";
 
 // Derived, not stored — TECH-STACK.md: don't build a mutable counter table
 // until querying `attempts` measurably doesn't scale.
@@ -57,6 +57,17 @@ export async function getRecentSessions(userId: string, limit = 5) {
     .where(eq(attempts.userId, userId))
     .orderBy(desc(attempts.attemptDate))
     .limit(limit);
+}
+
+export async function getEarnedBadgeIds(userId: string): Promise<Set<string>> {
+  const db = getDb();
+  const rows = await db.select({ badgeId: userBadges.badgeId }).from(userBadges).where(eq(userBadges.userId, userId));
+  return new Set(rows.map((r) => r.badgeId));
+}
+
+export async function getAttemptRecords(userId: string) {
+  const db = getDb();
+  return db.select({ date: attempts.attemptDate, isCorrect: attempts.isCorrect }).from(attempts).where(eq(attempts.userId, userId));
 }
 
 export async function getLeaderboard(limit = 50) {
