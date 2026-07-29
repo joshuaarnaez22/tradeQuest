@@ -36,3 +36,16 @@ export async function getTodaysPuzzle(): Promise<{ id: string; patternType: stri
 export async function clearAttempt(userId: string, date: string): Promise<void> {
   await sql`delete from attempts where user_id = ${userId} and attempt_date = ${date}`;
 }
+
+// Clears ALL of this user's attempts of one pattern type, not just known
+// dates — other seed scripts (seed-gamification-demo.ts, seed-dummy-data.ts)
+// can add history for the real test user on dates a test doesn't know
+// about, which would otherwise leave stray rows behind after clearing only
+// the dates a test itself seeded.
+export async function clearAttemptsForPatternType(userId: string, patternType: string): Promise<void> {
+  await sql`
+    delete from attempts where id in (
+      select a.id from attempts a join puzzles p on p.id = a.puzzle_id
+      where a.user_id = ${userId} and p.pattern_type = ${patternType}
+    )`;
+}

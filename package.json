@@ -13,10 +13,12 @@
     "test:e2e:learning": "playwright test e2e/learning-progression.spec.ts",
     "test:e2e:dashboard": "playwright test e2e/dashboard.spec.ts",
     "test:e2e:leaderboard": "playwright test e2e/leaderboard.spec.ts",
+    "test:e2e:gamification": "playwright test e2e/gamification.spec.ts",
     "seed:puzzles": "tsx --env-file=.env.local scripts/seed-puzzles.ts --commit",
     "seed:dummy-data": "tsx --env-file=.env.local scripts/seed-dummy-data.ts --commit",
     "seed:pattern-types": "tsx --env-file=.env.local scripts/backfill-pattern-types.ts --commit",
-    "seed:learning-demo": "tsx --env-file=.env.local scripts/seed-learning-progression-demo.ts --commit"
+    "seed:learning-demo": "tsx --env-file=.env.local scripts/seed-learning-progression-demo.ts --commit",
+    "seed:gamification-demo": "tsx --env-file=.env.local scripts/seed-gamification-demo.ts --commit"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^3.0.14",

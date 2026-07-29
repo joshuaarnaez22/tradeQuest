@@ -21,7 +21,8 @@ Start with [HANDOFF.md](HANDOFF.md) — it's the single source of truth for what
 | Doc | What it's for |
 |---|---|
 | [V2-PLAN.md](v2/V2-PLAN.md) | The four v2 pillars picked from PRD-vision.md (Learning & Progression, Deeper Gamification, Challenge Variety, Historical Campaigns), in build order, plain English. |
-| [LEARNING-PROGRESSION-SPEC.md](v2/LEARNING-PROGRESSION-SPEC.md) | Full technical design for v2 pillar #1. Currently in review. |
+| [LEARNING-PROGRESSION-SPEC.md](v2/LEARNING-PROGRESSION-SPEC.md) | Full technical design for v2 pillar #1. ✅ Shipped. |
+| [DEEPER-GAMIFICATION-SPEC.md](v2/DEEPER-GAMIFICATION-SPEC.md) | Full technical design for v2 pillar #2. ✅ Shipped. |
 
 ## Backlog tracking
 

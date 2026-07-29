@@ -1,12 +1,14 @@
 # TradeQuest — Session Handoff (single source of truth)
 
-> Last updated: 2026-07-28. Written for whoever (human or a fresh Claude session) picks this up next. Start here — this doc says what's actually true right now and links out to details instead of holding everything itself. See [docs/README.md](README.md) for the full map of every doc in this folder.
+> Last updated: 2026-07-29. Written for whoever (human or a fresh Claude session) picks this up next. Start here — this doc says what's actually true right now and links out to details instead of holding everything itself. See [docs/README.md](README.md) for the full map of every doc in this folder.
 
 ## TL;DR
 
 v1 is functionally complete per [PRD-v1.md](planning/PRD-v1.md) §10's literal done-bar: sign in → solve today's puzzle → grade → AI explanation → XP/streak/leaderboard update, verified end to end against real infra with 100 real puzzles. All Phase 0-11 work in [PRD-v1-IMPLEMENTATION-PLAN.md](planning/PRD-v1-IMPLEMENTATION-PLAN.md) is done except a real (non-`next dev`) Vercel deploy verification pass, and Phase 8 (streak-reminder cron) which is on hold by user choice. All code through 2026-07-28 is committed and pushed to `origin/main` — nothing outstanding.
 
-Work has since moved on to a v2 roadmap — see [V2-PLAN.md](v2/V2-PLAN.md). Pillar #1 (Learning & Progression) is shipped and verified in the browser: puzzles are tagged by pattern type (breakout/trend_continuation/reversal/range), and a struggling player sees a skippable lesson before their next puzzle of that type. See [LEARNING-PROGRESSION-SPEC.md](v2/LEARNING-PROGRESSION-SPEC.md) for the design.
+Work has since moved on to a v2 roadmap — see [V2-PLAN.md](v2/V2-PLAN.md). Two pillars shipped and verified in the browser so far:
+- **#1 Learning & Progression** — puzzles are tagged by pattern type (breakout/trend_continuation/reversal/range), and a struggling player sees a skippable lesson before their next puzzle of that type. See [LEARNING-PROGRESSION-SPEC.md](v2/LEARNING-PROGRESSION-SPEC.md).
+- **#2 Deeper Gamification** — level titles, 10 permanent badges (streak/volume/accuracy/goals), and weekly/monthly goal progress bars, with a real-time celebration banner when grading a puzzle earns a new badge. See [DEEPER-GAMIFICATION-SPEC.md](v2/DEEPER-GAMIFICATION-SPEC.md).
 
 ## What's actually live and provisioned
 
@@ -52,15 +54,14 @@ Everything else that used to be blocked (data provider, production Clerk webhook
 
 ## Testing
 
-Playwright e2e tests, one spec file per feature, in `e2e/`: `auth.spec.ts`, `replay.spec.ts`, `learning-progression.spec.ts`, `dashboard.spec.ts`, `leaderboard.spec.ts`. Run via `npm run test:e2e` (or `test:e2e:<feature>` for one file). These run against the real dev server and real Neon dev DB — there's no separate test DB yet — but every test only touches rows it creates itself, dated in the past, cleaned up in `afterAll`.
+Playwright e2e tests, one spec file per feature, in `e2e/`: `auth.spec.ts`, `replay.spec.ts`, `learning-progression.spec.ts`, `dashboard.spec.ts`, `leaderboard.spec.ts`, `gamification.spec.ts`. Run via `npm run test:e2e` (or `test:e2e:<feature>` for one file). These run against the real dev server and real Neon dev DB — there's no separate test DB yet — but every test only touches rows it creates itself, cleaned up in `afterAll`. `learning-progression.spec.ts` clears its test user's *entire* pattern-type history (not just known dates) before asserting on it, specifically so it stays correct regardless of what other seed scripts have added — worth keeping that pattern if you add more cross-feature seed data later.
 
 **One-time setup required before these can run**: a signed-in session saved to `e2e/.auth/user.json`. This is deliberately not something automated — see [e2e/README.md](../e2e/README.md) for the one command you run yourself.
 
-Two separate seed scripts, different purposes:
+Seed scripts, one per purpose (all dry-run by default, `--commit` writes):
 - `npm run seed:dummy-data` — 60 fake users (`dummy_user_000`...`dummy_user_059`, never logged into, no Clerk identity) with ~1,000 realistically-graded attempts spread over the last 45 days, so the leaderboard/dashboard have real volume instead of just one real user.
-- `npm run seed:learning-demo` — gives the one real signed-in user 8 deliberate wrong attempts (2 per pattern type, dated yesterday through 8 days ago, never today) so Learning & Progression's lesson card is guaranteed to show on `/replay` for manual testing. Safe to re-run anytime it stops showing (e.g. after solving today's puzzle, or after an e2e run clears it).
-
-Both dry-run by default, `--commit` writes, same convention as the puzzle seed scripts.
+- `npm run seed:learning-demo` — gives the one real signed-in user 8 deliberate wrong attempts (2 per pattern type, dated in the past, never today) so Learning & Progression's lesson card is guaranteed to show on `/replay` for manual testing. Safe to re-run anytime it stops showing.
+- `npm run seed:gamification-demo` — gives the real user 30 days of correct history (never today). Badges are only checked/awarded at real grading time (inside `POST /api/attempts`), so this alone doesn't create `user_badges` rows — solving *today's actual puzzle* right after running it is what triggers the real award + celebration banner for everything the seeded history newly qualifies for. Verified this session: awarded 8 of 10 badges simultaneously on one real submission.
 
 ## Reference docs (details that don't need to live in this file)
 
@@ -70,6 +71,6 @@ Both dry-run by default, `--commit` writes, same convention as the puzzle seed s
 
 ## Immediate next steps, roughly in order
 
-1. V2 pillar #2 (Deeper Gamification) — see [V2-PLAN.md](v2/V2-PLAN.md) for what it is; not yet spec'd in detail.
+1. V2 pillar #3 (Challenge Variety) — see [V2-PLAN.md](v2/V2-PLAN.md) for what it is; not yet spec'd in detail.
 2. Whenever you're ready: Resend domain + Vercel plan tier decisions to unblock Phase 8.
 3. A real Vercel deploy verification pass (Phase 11's last piece — cron specifically can't be verified under `next dev`).

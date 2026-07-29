@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { sql, isoDate, getSoleTestUserId, getTodaysPuzzle, clearAttempt } from "./helpers";
+import { sql, isoDate, getSoleTestUserId, getTodaysPuzzle, clearAttempt, clearAttemptsForPatternType } from "./helpers";
 import { patternTypeEnum } from "../src/db/schema";
 import { LESSONS } from "../src/lib/lessons";
 
@@ -27,7 +27,10 @@ test.describe("Learning & Progression", () => {
     }
 
     await clearAttempt(userId, isoDate(0));
-    for (const date of seededDates) await clearAttempt(userId, date);
+    // Wipe ALL of this pattern type's history, not just our own known
+    // dates — other seed scripts can have added same-pattern rows on
+    // dates this file doesn't know about.
+    await clearAttemptsForPatternType(userId, today.patternType);
 
     for (const [i, date] of seededDates.entries()) {
       await sql`insert into attempts (user_id, puzzle_id, decision, forward_return_pct, is_correct, xp_awarded, attempt_date)
@@ -67,13 +70,13 @@ test.describe("Learning & Progression", () => {
     expect(wrongCount).toBeGreaterThanOrEqual(2);
 
     await clearAttempt(userId, isoDate(0));
-    for (const date of seededDates) await clearAttempt(userId, date);
+    await clearAttemptsForPatternType(userId, today.patternType);
 
     const clearedRows = await sql`
       select a.is_correct from attempts a join puzzles p on p.id = a.puzzle_id
       where a.user_id = ${userId} and p.pattern_type = ${today.patternType}
       order by a.attempt_date desc limit 3`;
-    expect(clearedRows.length, "clearing the seeded rows should drop this below the struggle threshold").toBeLessThan(2);
+    expect(clearedRows.length, "clearing all of this pattern type's history should drop this below the struggle threshold").toBeLessThan(2);
 
     // Restore what beforeAll set up, so the next test in this file still
     // sees a struggling state regardless of execution order.
@@ -120,8 +123,9 @@ test.describe("Learning & Progression", () => {
   });
 
   test("a non-struggling puzzle skips the lesson entirely", async ({ page }) => {
+    const today = await getTodaysPuzzle();
     await clearAttempt(userId, isoDate(0));
-    for (const date of seededDates) await clearAttempt(userId, date);
+    await clearAttemptsForPatternType(userId, today.patternType);
 
     await page.goto("/replay");
     await expect(page.getByTestId("lesson-card")).not.toBeVisible();

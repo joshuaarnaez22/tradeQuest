@@ -26,7 +26,9 @@ Verified in the browser: puzzles are tagged by pattern type, a struggling player
 
 ---
 
-## 2. Deeper Gamification — build this second
+## 2. Deeper Gamification — ✅ shipped 2026-07-29
+
+Full design in [DEEPER-GAMIFICATION-SPEC.md](DEEPER-GAMIFICATION-SPEC.md): level titles, 10 permanent badges (streak/volume/accuracy/goals), and weekly/monthly goal progress bars, with a real-time "new badge" celebration on the replay screen.
 
 **The problem it fixes:** the dashboard is one flame icon and a number. It doesn't feel like a game yet.
 
