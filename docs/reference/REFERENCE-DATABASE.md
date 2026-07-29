@@ -2,7 +2,9 @@
 
 ## Row-Level Security
 
-`src/db/schema.ts` has Row-Level Security policies (Neon + Clerk integration, `authenticatedRole`/`authUid`). The app's own queries run through `getDb()` on what's almost certainly the Neon owner-role connection, which bypasses RLS entirely (standard Postgres behavior) — so this doesn't change how the app behaves today. It's defense-in-depth for if/when a Neon Data API or direct-from-browser Clerk-JWT-authenticated connection ever gets added, which nothing currently does.
+`src/db/schema.ts` declares Row-Level Security policies (Neon + Clerk integration, `authenticatedRole`/`authUid`) on every table. The app's own queries run through `getDb()` on what's almost certainly the Neon owner-role connection, which bypasses RLS entirely (standard Postgres behavior) — so this doesn't change how the app behaves today regardless. It's meant as defense-in-depth for if/when a Neon Data API or direct-from-browser Clerk-JWT-authenticated connection ever gets added, which nothing currently does.
+
+**Correction (2026-07-29):** none of these policies actually exist in the live database. Every `CREATE POLICY` statement fails with `role "authenticated" does not exist` — only a `neon_auth` role exists, not `authenticated`. This means Neon's RLS/Clerk integration was never fully provisioned at the platform level (there's usually a console step for this), and every migration that included `CREATE POLICY` statements (the original schema, `0001`, and `0003` for `user_badges`) has been silently dropping those specific statements while the rest of the migration succeeds. Confirmed via `select * from pg_policies where schemaname = 'public'` returning zero rows. Since this was always inert defense-in-depth with no functional effect either way, it wasn't worth blocking unrelated work to fix — but if RLS enforcement is ever actually needed (e.g. a future direct-from-browser connection), provisioning the `authenticated` role in the Neon console first is a prerequisite, not just re-running the migrations.
 
 ## puzzles.id / attempts.id are uuid, not serial
 

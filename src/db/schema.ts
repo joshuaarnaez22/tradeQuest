@@ -81,3 +81,22 @@ export const attempts = pgTable(
     pgPolicy("attempts_insert_own", { for: "insert", to: authenticatedRole, withCheck: authUid(table.userId) }),
   ]
 ).enableRLS();
+
+// Permanent, earned-once records — the moment a badge is newly earned
+// (checked in POST /api/attempts right after grading), a row lands here
+// and stays forever, even if the underlying condition later becomes false
+// again (e.g. a streak badge stays earned after the streak lapses).
+export const userBadges = pgTable(
+  "user_badges",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id").notNull().references(() => users.id),
+    badgeId: text("badge_id").notNull(), // matches an id in src/lib/badges.ts — no DB catalog table
+    earnedAt: timestamp("earned_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    unique("user_badges_user_badge_unique").on(table.userId, table.badgeId),
+    pgPolicy("user_badges_select_own", { for: "select", to: authenticatedRole, using: authUid(table.userId) }),
+    pgPolicy("user_badges_insert_own", { for: "insert", to: authenticatedRole, withCheck: authUid(table.userId) }),
+  ]
+).enableRLS();
