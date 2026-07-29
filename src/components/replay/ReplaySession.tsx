@@ -9,7 +9,13 @@ import { SimulatedDataBanner } from "@/components/ui/SimulatedDataBanner";
 import { EASE_BOUNCE } from "@/lib/motion";
 import type { Decision } from "@/db/schema";
 
-type Result = { isCorrect: boolean; forwardReturnPct: number; explanation: string | null; xpAwarded: number };
+type Result = {
+  isCorrect: boolean;
+  forwardReturnPct: number;
+  explanation: string | null;
+  xpAwarded: number;
+  newBadges: { id: string; title: string; description: string }[];
+};
 
 const FALLBACK_TEXT: Record<"correct" | "incorrect" | "waitedRight" | "waitedWrong", string> = {
   correct: "Nice read — that's what happened next.",
@@ -172,6 +178,35 @@ export function ReplaySession({
           <span style={{ fontFamily: "var(--font-mono)", fontSize: 15, fontWeight: 600, color: "var(--violet-500)" }}>
             +{result.xpAwarded} XP
           </span>
+        </motion.div>
+      )}
+
+      {revealed && result && result.newBadges.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: EASE_BOUNCE, delay: 0.15 }}
+          style={{ display: "grid", gap: 8 }}
+        >
+          {result.newBadges.map((badge) => (
+            <div
+              key={badge.id}
+              data-testid="new-badge-banner"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                background: "var(--brand-subtle-bg)",
+                border: "var(--border-width-thick) solid var(--border-default)",
+                borderRadius: "var(--radius-md)",
+                padding: "10px 16px",
+                fontSize: 14,
+                fontWeight: 700,
+              }}
+            >
+              🏅 New badge: {badge.title}
+            </div>
+          ))}
         </motion.div>
       )}
 

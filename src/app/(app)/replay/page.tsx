@@ -62,6 +62,7 @@ export default async function ReplayPage() {
               forwardReturnPct: Number(existing.forwardReturnPct),
               explanation: existing.aiExplanation,
               xpAwarded: existing.xpAwarded,
+              newBadges: [],
             }
           : null
       }
