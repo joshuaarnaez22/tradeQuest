@@ -2,12 +2,13 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
-import { attempts, puzzles, type Decision, decisionEnum } from "@/db/schema";
+import { attempts, puzzles, userBadges, type Decision, decisionEnum } from "@/db/schema";
 import { puzzleIndexForToday, todayUtcDateString } from "@/lib/puzzle-of-day";
 import { gradeDecision } from "@/lib/grading";
 import { xpForAttempt } from "@/lib/xp";
 import { generateExplanation } from "@/lib/ai-mentor";
 import { attemptsRatelimit } from "@/lib/ratelimit";
+import { checkNewlyEarnedBadges, type AttemptRecord } from "@/lib/badges";
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -40,6 +41,7 @@ export async function POST(req: NextRequest) {
       forwardReturnPct: Number(existing.forwardReturnPct),
       explanation: existing.aiExplanation,
       xpAwarded: existing.xpAwarded,
+      newBadges: [],
     });
   }
 
@@ -71,5 +73,24 @@ export async function POST(req: NextRequest) {
     attemptDate,
   });
 
-  return NextResponse.json({ isCorrect, forwardReturnPct, explanation, xpAwarded });
+  // Badges are a bonus layer on top of grading, not the critical path — a
+  // failure here must never turn a successful grade into a failed request.
+  let newBadges: { id: string; title: string; description: string }[] = [];
+  try {
+    const earnedRows = await db.select({ badgeId: userBadges.badgeId }).from(userBadges).where(eq(userBadges.userId, userId));
+    const alreadyEarned = new Set(earnedRows.map((r) => r.badgeId));
+    const history: AttemptRecord[] = await db
+      .select({ date: attempts.attemptDate, isCorrect: attempts.isCorrect })
+      .from(attempts)
+      .where(eq(attempts.userId, userId));
+    const justEarned = checkNewlyEarnedBadges(history, alreadyEarned);
+    for (const badge of justEarned) {
+      await db.insert(userBadges).values({ userId, badgeId: badge.id }).onConflictDoNothing({ target: [userBadges.userId, userBadges.badgeId] });
+    }
+    newBadges = justEarned.map(({ id, title, description }) => ({ id, title, description }));
+  } catch (err) {
+    console.error("Badge check failed (grading still succeeded):", err);
+  }
+
+  return NextResponse.json({ isCorrect, forwardReturnPct, explanation, xpAwarded, newBadges });
 }
