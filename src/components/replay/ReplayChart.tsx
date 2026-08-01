@@ -38,10 +38,14 @@ export function ReplayChart({
   historyCandles,
   outcomeCandles,
   revealed,
+  speedMultiplier = 1,
+  onHistoryComplete,
 }: {
   historyCandles: CandleDatum[];
   outcomeCandles: CandleDatum[];
   revealed: boolean;
+  speedMultiplier?: number;
+  onHistoryComplete?: () => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -51,6 +55,8 @@ export function ReplayChart({
   // its final size throughout the reveal, so a growing candle count doesn't
   // also make the price axis rescale/jump on every tick.
   const rangeLockRef = useRef<ISeriesApi<"Line"> | null>(null);
+  const onHistoryCompleteRef = useRef(onHistoryComplete);
+  onHistoryCompleteRef.current = onHistoryComplete;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -135,6 +141,7 @@ export function ReplayChart({
     const chart = chartRef.current;
     if (!series || !chart) return;
 
+    const tickMs = HISTORY_TICK_MS / speedMultiplier;
     const total = historyCandles.length + outcomeCandles.length;
     series.setData([]);
     const timers = historyCandles.map((_, i) =>
@@ -144,10 +151,13 @@ export function ReplayChart({
         series.setData(historyCandles.slice(0, k).map(toBar));
         const margin = Math.max(0, (total - k) / 2);
         chart.timeScale().setVisibleLogicalRange({ from: -margin - 0.5, to: k - 1 + margin + 0.5 });
-      }, i * HISTORY_TICK_MS)
+        if (k === historyCandles.length) onHistoryCompleteRef.current?.();
+      }, i * tickMs)
     );
+    // Empty history edge case — still unblock the decision UI.
+    if (historyCandles.length === 0) onHistoryCompleteRef.current?.();
     return () => timers.forEach(clearTimeout);
-  }, [historyCandles, outcomeCandles]);
+  }, [historyCandles, outcomeCandles, speedMultiplier]);
 
   // Once a decision is made (revealed=true), reveal the outcome candles one
   // at a time — same formula as above, continuing the running total so the
@@ -164,8 +174,10 @@ export function ReplayChart({
     const chart = chartRef.current;
     if (!series || !chart) return;
 
+    const histTick = HISTORY_TICK_MS / speedMultiplier;
+    const outTick = OUTCOME_TICK_MS / speedMultiplier;
     const total = historyCandles.length + outcomeCandles.length;
-    const startDelay = historyCandles.length * HISTORY_TICK_MS;
+    const startDelay = historyCandles.length * histTick;
     const timers = outcomeCandles.map((_, i) =>
       setTimeout(
         () => {
@@ -175,11 +187,11 @@ export function ReplayChart({
           const margin = Math.max(0, (total - k) / 2);
           chart.timeScale().setVisibleLogicalRange({ from: -margin - 0.5, to: k - 1 + margin + 0.5 });
         },
-        startDelay + i * OUTCOME_TICK_MS
+        startDelay + i * outTick
       )
     );
     return () => timers.forEach(clearTimeout);
-  }, [revealed, outcomeCandles, historyCandles]);
+  }, [revealed, outcomeCandles, historyCandles, speedMultiplier]);
 
   return (
     <div

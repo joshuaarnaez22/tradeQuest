@@ -15,11 +15,13 @@ export function isStruggling(recentResults: boolean[]): boolean {
 
 export async function getStruggleForPatternType(userId: string, patternType: PatternType): Promise<boolean> {
   const db = getDb();
+  // Only daily attempts feed struggle detection — challenge modes are
+  // practice and shouldn't gate (or clear) the daily lesson card.
   const rows = await db
     .select({ isCorrect: attempts.isCorrect })
     .from(attempts)
     .innerJoin(puzzles, eq(puzzles.id, attempts.puzzleId))
-    .where(and(eq(attempts.userId, userId), eq(puzzles.patternType, patternType)))
+    .where(and(eq(attempts.userId, userId), eq(puzzles.patternType, patternType), eq(attempts.mode, "daily")))
     .orderBy(desc(attempts.attemptDate))
     .limit(3);
   return isStruggling(rows.map((r) => r.isCorrect));

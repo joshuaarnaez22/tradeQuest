@@ -8,6 +8,7 @@ import { Tag } from "@/components/core/Tag";
 
 const LINKS = [
   { href: "/replay", label: "Replay" },
+  { href: "/challenges", label: "Challenges" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/leaderboard", label: "Leaderboard" },
 ];
@@ -44,7 +45,7 @@ export function AppNav() {
       </Link>
       <span style={{ display: "flex", flexWrap: "wrap", gap: 16, rowGap: 10 }}>
         {LINKS.map((l) => {
-          const active = pathname === l.href;
+          const active = pathname === l.href || (l.href !== "/replay" && pathname.startsWith(l.href));
           return (
             <Link key={l.href} href={l.href} aria-current={active ? "page" : undefined} style={{ textDecoration: "none" }}>
               <Tag outlined={!active} style={active ? { background: "var(--violet-500)", color: "var(--paper-0)" } : undefined}>

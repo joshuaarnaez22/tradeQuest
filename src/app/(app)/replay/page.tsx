@@ -18,7 +18,7 @@ export default async function ReplayPage() {
   const [existing] = await db
     .select()
     .from(attempts)
-    .where(and(eq(attempts.userId, userId), eq(attempts.attemptDate, attemptDate)))
+    .where(and(eq(attempts.userId, userId), eq(attempts.attemptDate, attemptDate), eq(attempts.mode, "daily")))
     .limit(1);
 
   // An existing attempt pins which puzzle "today" actually was — re-deriving
@@ -49,6 +49,7 @@ export default async function ReplayPage() {
 
   return (
     <ReplaySession
+      mode="daily"
       symbol={puzzle.symbol}
       timeframe={puzzle.timeframe}
       historyCandles={historyCandles}

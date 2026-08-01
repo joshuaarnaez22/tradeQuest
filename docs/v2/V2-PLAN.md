@@ -40,7 +40,9 @@ Full design in [DEEPER-GAMIFICATION-SPEC.md](DEEPER-GAMIFICATION-SPEC.md): level
 
 ---
 
-## 3. Challenge Variety — build this third
+## 3. Challenge Variety — ✅ shipped 2026-08-01
+
+Full design in [CHALLENGE-VARIETY-SPEC.md](CHALLENGE-VARIETY-SPEC.md): weekly challenge, speed mode, and replay-mistakes on shared `attempts.mode` plumbing. Daily stays the streak/habit anchor; challenge attempts award XP without counting toward streak or weekly/monthly goals.
 
 **The problem it fixes:** the only reason to open the app is "today's one puzzle." No reason to come back later in the day, and no way to work on a specific weakness on demand.
 

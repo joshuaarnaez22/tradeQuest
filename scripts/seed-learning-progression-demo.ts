@@ -8,7 +8,7 @@
 // lesson stops showing (e.g. after solving today's puzzle consumes the
 // "no attempt yet today" state, or an e2e run cleared these rows).
 // Dry-run by default; --commit writes.
-import { not, like } from "drizzle-orm";
+import { not, like, sql } from "drizzle-orm";
 import { getDb } from "../src/db";
 import { users, puzzles, attempts, decisionEnum, patternTypeEnum, type Decision, type PatternType } from "../src/db/schema";
 import { gradeDecision } from "../src/lib/grading";
@@ -62,7 +62,11 @@ async function main() {
           xpAwarded: xpForAttempt(wrongDecision, false),
           attemptDate,
         };
-        await db.insert(attempts).values(row).onConflictDoUpdate({ target: [attempts.userId, attempts.attemptDate], set: row });
+        await db.insert(attempts).values(row).onConflictDoUpdate({
+          target: [attempts.userId, attempts.attemptDate],
+          targetWhere: sql`${attempts.mode} = 'daily'`,
+          set: row,
+        });
       }
       dayOffset++;
     }

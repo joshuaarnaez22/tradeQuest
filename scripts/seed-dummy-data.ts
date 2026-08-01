@@ -13,6 +13,7 @@
 // history to manually test with, see scripts/seed-learning-progression-demo.ts
 // instead — kept separate since it's a different purpose (manual testing
 // vs. bulk leaderboard/dashboard volume).
+import { sql } from "drizzle-orm";
 import { getDb } from "../src/db";
 import { users, puzzles, attempts, decisionEnum, type Decision } from "../src/db/schema";
 import { gradeDecision } from "../src/lib/grading";
@@ -93,7 +94,10 @@ async function main() {
             xpAwarded,
             attemptDate: isoDateDaysAgo(daysAgo),
           })
-          .onConflictDoNothing({ target: [attempts.userId, attempts.attemptDate] });
+          .onConflictDoNothing({
+            target: [attempts.userId, attempts.attemptDate],
+            where: sql`${attempts.mode} = 'daily'`,
+          });
       }
     }
 

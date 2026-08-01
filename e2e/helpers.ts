@@ -33,8 +33,12 @@ export async function getTodaysPuzzle(): Promise<{ id: string; patternType: stri
   return { id: puzzles[idx].id, patternType: puzzles[idx].pattern_type, symbol: puzzles[idx].symbol };
 }
 
-export async function clearAttempt(userId: string, date: string): Promise<void> {
-  await sql`delete from attempts where user_id = ${userId} and attempt_date = ${date}`;
+export async function clearAttempt(userId: string, date: string, mode = "daily"): Promise<void> {
+  await sql`delete from attempts where user_id = ${userId} and attempt_date = ${date} and mode = ${mode}`;
+}
+
+export async function clearAttemptsByMode(userId: string, mode: string): Promise<void> {
+  await sql`delete from attempts where user_id = ${userId} and mode = ${mode}`;
 }
 
 // Clears ALL of this user's attempts of one pattern type, not just known

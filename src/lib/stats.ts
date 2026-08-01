@@ -1,4 +1,4 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { attempts, users, userBadges } from "@/db/schema";
 
@@ -36,10 +36,11 @@ export function computeStreak(attemptDates: string[], today = new Date()): numbe
 
 export async function getUserStreak(userId: string): Promise<number> {
   const db = getDb();
+  // Challenge modes never feed the streak — daily habit only.
   const rows = await db
     .selectDistinct({ attemptDate: attempts.attemptDate })
     .from(attempts)
-    .where(eq(attempts.userId, userId))
+    .where(and(eq(attempts.userId, userId), eq(attempts.mode, "daily")))
     .orderBy(desc(attempts.attemptDate));
   return computeStreak(rows.map((r) => r.attemptDate));
 }
@@ -52,10 +53,11 @@ export async function getRecentSessions(userId: string, limit = 5) {
       isCorrect: attempts.isCorrect,
       forwardReturnPct: attempts.forwardReturnPct,
       attemptDate: attempts.attemptDate,
+      mode: attempts.mode,
     })
     .from(attempts)
     .where(eq(attempts.userId, userId))
-    .orderBy(desc(attempts.attemptDate))
+    .orderBy(desc(attempts.createdAt))
     .limit(limit);
 }
 
@@ -67,7 +69,10 @@ export async function getEarnedBadgeIds(userId: string): Promise<Set<string>> {
 
 export async function getAttemptRecords(userId: string) {
   const db = getDb();
-  return db.select({ date: attempts.attemptDate, isCorrect: attempts.isCorrect }).from(attempts).where(eq(attempts.userId, userId));
+  return db
+    .select({ date: attempts.attemptDate, isCorrect: attempts.isCorrect, mode: attempts.mode })
+    .from(attempts)
+    .where(eq(attempts.userId, userId));
 }
 
 export async function getLeaderboard(limit = 50) {

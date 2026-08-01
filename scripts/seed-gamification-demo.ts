@@ -6,7 +6,7 @@
 // right after running this is what triggers the actual award +
 // celebration banner, exercising the real pipeline instead of faking it.
 // Never touches today's date. Dry-run by default; --commit writes.
-import { not, like } from "drizzle-orm";
+import { not, like, sql } from "drizzle-orm";
 import { getDb } from "../src/db";
 import { users, puzzles, attempts, type Decision } from "../src/db/schema";
 
@@ -47,7 +47,11 @@ async function main() {
         xpAwarded: 15,
         attemptDate,
       };
-      await db.insert(attempts).values(row).onConflictDoUpdate({ target: [attempts.userId, attempts.attemptDate], set: row });
+      await db.insert(attempts).values(row).onConflictDoUpdate({
+        target: [attempts.userId, attempts.attemptDate],
+        targetWhere: sql`${attempts.mode} = 'daily'`,
+        set: row,
+      });
     }
   }
 

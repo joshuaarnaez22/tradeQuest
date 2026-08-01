@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { ReplayChart, type CandleDatum } from "./ReplayChart";
 import { DecisionControls } from "./DecisionControls";
 import { CandleCallBadge } from "@/components/ui/CandleCallBadge";
 import { SimulatedDataBanner } from "@/components/ui/SimulatedDataBanner";
 import { EASE_BOUNCE } from "@/lib/motion";
-import type { Decision } from "@/db/schema";
+import { SPEED_DECISION_SECONDS } from "@/lib/challenges";
+import type { AttemptMode, Decision } from "@/db/schema";
 
 type Result = {
   isCorrect: boolean;
@@ -29,7 +30,16 @@ function fallbackText(decision: Decision, isCorrect: boolean) {
   return isCorrect ? FALLBACK_TEXT.correct : FALLBACK_TEXT.incorrect;
 }
 
+const MODE_LABEL: Record<AttemptMode, string> = {
+  daily: "replay",
+  mistake: "mistake replay",
+  speed: "speed",
+  weekly: "weekly challenge",
+};
+
 export function ReplaySession({
+  mode = "daily",
+  puzzleId,
   symbol,
   timeframe,
   historyCandles,
@@ -37,7 +47,10 @@ export function ReplaySession({
   lesson,
   initialDecision,
   initialResult,
+  doneMessage,
 }: {
+  mode?: AttemptMode;
+  puzzleId?: string;
   symbol: string;
   timeframe: string;
   historyCandles: CandleDatum[];
@@ -45,23 +58,52 @@ export function ReplaySession({
   lesson: { title: string; body: string } | null;
   initialDecision: Decision | null;
   initialResult: Result | null;
+  doneMessage?: string;
 }) {
   const [decision, setDecision] = useState<Decision | null>(initialDecision);
   const [result, setResult] = useState<Result | null>(initialResult);
   const [pending, setPending] = useState(false);
   const [lessonDismissed, setLessonDismissed] = useState(!lesson);
+  const [historyDone, setHistoryDone] = useState(!!initialDecision || !!initialResult || mode !== "speed");
+  const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
 
   const revealed = decision !== null;
+  const isSpeed = mode === "speed";
+  const speedMultiplier = isSpeed ? 2 : 1;
+  const canDecide = !revealed && (mode !== "speed" || historyDone);
 
-  async function handleDecide(next: Decision) {
+  // History reveal finished → start the speed decision timer (fresh sessions only).
+  useEffect(() => {
+    if (!isSpeed || revealed || !historyDone || initialResult) return;
+    setSecondsLeft(SPEED_DECISION_SECONDS);
+  }, [isSpeed, revealed, historyDone, initialResult]);
+
+  useEffect(() => {
+    if (secondsLeft === null || revealed || pending) return;
+    if (secondsLeft <= 0) {
+      void submitDecision("wait", true);
+      return;
+    }
+    const t = setTimeout(() => setSecondsLeft((s) => (s === null ? null : s - 1)), 1000);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- submitDecision is stable enough for this timer tick
+  }, [secondsLeft, revealed, pending]);
+
+  async function submitDecision(next: Decision, timedOut = false) {
     if (revealed || pending) return;
     setPending(true);
     setDecision(next);
+    setSecondsLeft(null);
     try {
       const res = await fetch("/api/attempts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ decision: next }),
+        body: JSON.stringify({
+          decision: next,
+          mode,
+          ...(puzzleId ? { puzzleId } : {}),
+          ...(timedOut ? { timedOut: true } : {}),
+        }),
       });
       if (!res.ok) throw new Error(await res.text());
       setResult(await res.json());
@@ -70,6 +112,10 @@ export function ReplaySession({
     } finally {
       setPending(false);
     }
+  }
+
+  async function handleDecide(next: Decision) {
+    await submitDecision(next, false);
   }
 
   return (
@@ -88,8 +134,22 @@ export function ReplaySession({
             color: "var(--text-secondary)",
           }}
         >
-          {timeframe} replay
+          {timeframe} · {MODE_LABEL[mode]}
         </span>
+        {isSpeed && secondsLeft !== null && !revealed && (
+          <span
+            data-testid="speed-timer"
+            style={{
+              marginLeft: "auto",
+              fontFamily: "var(--font-mono)",
+              fontSize: 18,
+              fontWeight: 700,
+              color: secondsLeft <= 5 ? "var(--market-down)" : "var(--violet-500)",
+            }}
+          >
+            {secondsLeft}s
+          </span>
+        )}
       </div>
 
       {lesson && !lessonDismissed && (
@@ -130,9 +190,15 @@ export function ReplaySession({
 
       {lessonDismissed && (
         <>
-          <ReplayChart historyCandles={historyCandles} outcomeCandles={outcomeCandles} revealed={revealed} />
+          <ReplayChart
+            historyCandles={historyCandles}
+            outcomeCandles={outcomeCandles}
+            revealed={revealed}
+            speedMultiplier={speedMultiplier}
+            onHistoryComplete={() => setHistoryDone(true)}
+          />
 
-          {!revealed && <DecisionControls onDecide={handleDecide} disabled={pending} pending={pending ? decision : null} />}
+          {!revealed && canDecide && <DecisionControls onDecide={handleDecide} disabled={pending} pending={pending ? decision : null} />}
         </>
       )}
 
@@ -204,13 +270,17 @@ export function ReplaySession({
                 fontWeight: 700,
               }}
             >
-              🏅 New badge: {badge.title}
+              New badge: {badge.title}
             </div>
           ))}
         </motion.div>
       )}
 
-      {revealed && result && <p style={{ margin: 0, fontSize: 13, color: "var(--text-secondary)" }}>Come back tomorrow for the next puzzle.</p>}
+      {revealed && result && (
+        <p style={{ margin: 0, fontSize: 13, color: "var(--text-secondary)" }}>
+          {doneMessage ?? (mode === "daily" ? "Come back tomorrow for the next puzzle." : "Head back to Challenges for another run.")}
+        </p>
+      )}
 
       <SimulatedDataBanner />
     </div>

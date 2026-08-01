@@ -175,7 +175,10 @@ export default async function DashboardPage() {
                   background: "var(--surface-sunken)",
                 }}
               >
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: 14 }}>{s.attemptDate}</span>
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: 14 }}>
+                  {s.attemptDate}
+                  {s.mode !== "daily" ? ` · ${s.mode}` : ""}
+                </span>
                 <CandleCallBadge call={s.decision} correct={s.isCorrect} />
               </div>
             ))}

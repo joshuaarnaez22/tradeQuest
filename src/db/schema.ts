@@ -1,4 +1,4 @@
-import { pgTable, uuid, smallint, text, timestamp, date, jsonb, numeric, integer, boolean, unique, index, pgPolicy } from "drizzle-orm/pg-core";
+import { pgTable, uuid, smallint, text, timestamp, date, jsonb, numeric, integer, boolean, unique, uniqueIndex, index, pgPolicy } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { authenticatedRole, authUid } from "drizzle-orm/neon/rls";
 
@@ -51,6 +51,9 @@ export const puzzles = pgTable(
 export const decisionEnum = ["buy", "sell", "wait"] as const;
 export type Decision = (typeof decisionEnum)[number];
 
+export const attemptModeEnum = ["daily", "mistake", "speed", "weekly"] as const;
+export type AttemptMode = (typeof attemptModeEnum)[number];
+
 // RLS: a user may read and insert only their own attempts. No update/delete
 // policy — graded attempts are immutable game history, so both stay denied by
 // RLS's default-deny for `authenticated`.
@@ -66,17 +69,28 @@ export const attempts = pgTable(
     xpAwarded: integer("xp_awarded").notNull(),
     aiExplanation: text("ai_explanation"), // cached so a revisit doesn't re-call the model
     attemptDate: date("attempt_date").notNull(), // UTC date — the field streak logic keys off
+    // Challenge Variety: daily is the streak/habit row; other modes award XP
+    // without counting toward streak or weekly/monthly goals.
+    mode: text("mode", { enum: attemptModeEnum }).notNull().default("daily"),
+    // ISO week key (YYYY-Www) for weekly-mode rows; null otherwise.
+    periodKey: text("period_key"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => [
-    // One graded attempt per user per calendar day — NOT per puzzle, since
-    // puzzles[dayOfYear % 100] legitimately repeats the same puzzle every ~100 days.
-    // Leftmost column (user_id) also covers plain per-user lookups (getUserXp,
-    // getUserStreak, getRecentSessions) — no separate user_id index needed.
-    unique("attempts_user_date_unique").on(table.userId, table.attemptDate),
+    // One *daily* graded attempt per user per calendar day — challenge modes
+    // can coexist on the same date. Leftmost column (user_id) still covers
+    // plain per-user lookups (getUserXp, getUserStreak, getRecentSessions).
+    uniqueIndex("attempts_user_date_daily_unique")
+      .on(table.userId, table.attemptDate)
+      .where(sql`${table.mode} = 'daily'`),
+    // One graded attempt per weekly-challenge puzzle per ISO week.
+    uniqueIndex("attempts_weekly_unique")
+      .on(table.userId, table.puzzleId, table.mode, table.periodKey)
+      .where(sql`${table.mode} = 'weekly'`),
     // puzzle_id is a bare FK with no other index covering it (leaderboard/stats
-    // group by user_id, not puzzle_id, so the unique index above doesn't help here).
+    // group by user_id, not puzzle_id, so the unique indexes above don't help).
     index("attempts_puzzle_id_idx").on(table.puzzleId),
+    index("attempts_user_mode_idx").on(table.userId, table.mode),
     pgPolicy("attempts_select_own", { for: "select", to: authenticatedRole, using: authUid(table.userId) }),
     pgPolicy("attempts_insert_own", { for: "insert", to: authenticatedRole, withCheck: authUid(table.userId) }),
   ]
