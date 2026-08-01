@@ -24,6 +24,7 @@ Start with [HANDOFF.md](HANDOFF.md) — it's the single source of truth for what
 | [LEARNING-PROGRESSION-SPEC.md](v2/LEARNING-PROGRESSION-SPEC.md) | Full technical design for v2 pillar #1. ✅ Shipped. |
 | [DEEPER-GAMIFICATION-SPEC.md](v2/DEEPER-GAMIFICATION-SPEC.md) | Full technical design for v2 pillar #2. ✅ Shipped. |
 | [CHALLENGE-VARIETY-SPEC.md](v2/CHALLENGE-VARIETY-SPEC.md) | Full technical design for v2 pillar #3 (weekly / speed / mistakes). ✅ Shipped. |
+| [HISTORICAL-CAMPAIGNS-SPEC.md](v2/HISTORICAL-CAMPAIGNS-SPEC.md) | Full technical design for v2 pillar #4 (story arcs from named events). ✅ Shipped. |
 
 ## Backlog tracking
 

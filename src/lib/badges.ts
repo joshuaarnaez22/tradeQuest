@@ -1,12 +1,13 @@
 import assert from "node:assert";
 import type { AttemptMode } from "@/db/schema";
+import { CAMPAIGNS, campaignPeriodKey } from "@/lib/campaigns";
 
 // Badge catalog + all "is this earned" math. Definitions live here in code,
 // not the database — src/lib/lessons.ts is the same pattern. Only the fact
 // "user X earned badge Y at time Z" is persisted (src/db/schema.ts's
 // userBadges table); everything about what a badge means and how to check
 // it can change here without a migration.
-export type AttemptRecord = { date: string; isCorrect: boolean; mode: AttemptMode };
+export type AttemptRecord = { date: string; isCorrect: boolean; mode: AttemptMode; periodKey?: string | null };
 
 export const WEEKLY_GOAL = 5;
 export const MONTHLY_GOAL = 20;
@@ -74,6 +75,16 @@ function hasCompletedWeeklyChallengeEver(records: AttemptRecord[]): boolean {
   return [...counts.values()].some((n) => n >= 5);
 }
 
+export function hasCompletedCampaign(records: AttemptRecord[], slug: string, missionCount: number): boolean {
+  const keys = new Set(
+    records.filter((r) => r.mode === "campaign" && r.periodKey?.startsWith(`${slug}:`)).map((r) => r.periodKey!)
+  );
+  for (let i = 0; i < missionCount; i++) {
+    if (!keys.has(campaignPeriodKey(slug, i))) return false;
+  }
+  return true;
+}
+
 export type Badge = { id: string; title: string; description: string; isEarned: (records: AttemptRecord[]) => boolean };
 
 export const BADGES: Badge[] = [
@@ -123,6 +134,14 @@ export const BADGES: Badge[] = [
     description: "Complete all 5 puzzles in a weekly challenge.",
     isEarned: hasCompletedWeeklyChallengeEver,
   },
+  ...CAMPAIGNS.map(
+    (c): Badge => ({
+      id: c.badgeId,
+      title: `${c.title} Complete`,
+      description: `Finish every mission in ${c.title}.`,
+      isEarned: (r) => hasCompletedCampaign(r, c.slug, c.missions.length),
+    })
+  ),
 ];
 
 export function checkNewlyEarnedBadges(records: AttemptRecord[], alreadyEarnedIds: Set<string>): Badge[] {
@@ -149,16 +168,15 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   assert.equal(longestStreakEver([]), 0);
   assert.equal(longestStreakEver(["2026-01-01"]), 1);
   assert.equal(longestStreakEver(["2026-01-01", "2026-01-02", "2026-01-03"]), 3);
-  assert.equal(longestStreakEver(["2026-01-01", "2026-01-03"]), 1); // gap breaks it
-  assert.equal(longestStreakEver(["2026-01-05", "2026-01-01", "2026-01-02"]), 2); // unsorted input, still finds the run
+  assert.equal(longestStreakEver(["2026-01-01", "2026-01-03"]), 1);
+  assert.equal(longestStreakEver(["2026-01-05", "2026-01-01", "2026-01-02"]), 2);
 
   const perfectWeek: AttemptRecord[] = ["2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10", "2026-01-11"].map(
     (date) => ({ date, isCorrect: true, mode: "daily" as const })
-  ); // Mon 1/5 .. Sun 1/11
+  );
   assert.equal(hasPerfectWeekEver(perfectWeek), true);
   assert.equal(hasPerfectWeekEver([...perfectWeek.slice(0, 6), { date: "2026-01-11", isCorrect: false, mode: "daily" }]), false);
 
-  // Challenge attempts must not inflate streak/goal badges.
   const farmed: AttemptRecord[] = [
     { date: "2026-01-05", isCorrect: true, mode: "daily" },
     { date: "2026-01-05", isCorrect: true, mode: "speed" },
@@ -171,13 +189,23 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   assert.ok(checkNewlyEarnedBadges(farmed, new Set()).some((b) => b.id === "first_correct"));
   assert.ok(!checkNewlyEarnedBadges(farmed, new Set()).some((b) => b.id === "first_weekly_goal"));
 
-  const weeklyClear: AttemptRecord[] = Array.from({ length: 5 }, (_, i) => ({
+  const weeklyClear: AttemptRecord[] = Array.from({ length: 5 }, () => ({
     date: "2026-01-07",
     isCorrect: true,
     mode: "weekly" as const,
   }));
   assert.ok(hasCompletedWeeklyChallengeEver(weeklyClear));
   assert.ok(checkNewlyEarnedBadges(weeklyClear, new Set()).some((b) => b.id === "first_weekly_challenge"));
+
+  const contagion = CAMPAIGNS.find((c) => c.slug === "contagion-2022")!;
+  const campaignClear: AttemptRecord[] = contagion.missions.map((_, i) => ({
+    date: "2026-01-07",
+    isCorrect: true,
+    mode: "campaign" as const,
+    periodKey: campaignPeriodKey("contagion-2022", i),
+  }));
+  assert.ok(hasCompletedCampaign(campaignClear, "contagion-2022", contagion.missions.length));
+  assert.ok(checkNewlyEarnedBadges(campaignClear, new Set()).some((b) => b.id === "campaign_contagion_2022"));
 
   const justEarned = checkNewlyEarnedBadges([{ date: "2026-01-01", isCorrect: true, mode: "daily" }], new Set());
   assert.ok(justEarned.some((b) => b.id === "first_correct"));

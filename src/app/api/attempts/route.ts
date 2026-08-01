@@ -10,6 +10,7 @@ import { generateExplanation } from "@/lib/ai-mentor";
 import { attemptsRatelimit } from "@/lib/ratelimit";
 import { checkNewlyEarnedBadges, type AttemptRecord } from "@/lib/badges";
 import { isAttemptMode, isoWeekId, SPEED_DAILY_CAP, weeklyPuzzleIds } from "@/lib/challenges";
+import { campaignPeriodKey, getCampaign, parseCampaignPeriodKey } from "@/lib/campaigns";
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -25,6 +26,7 @@ export async function POST(req: NextRequest) {
   const mode: AttemptMode = isAttemptMode(body?.mode) ? body.mode : "daily";
   const timedOut = body?.timedOut === true;
   const clientPuzzleId = typeof body?.puzzleId === "string" ? body.puzzleId : undefined;
+  const clientPeriodKey = typeof body?.periodKey === "string" ? body.periodKey : undefined;
 
   let decision = body?.decision as Decision | undefined;
   if (timedOut && mode === "speed") {
@@ -35,6 +37,9 @@ export async function POST(req: NextRequest) {
 
   if (mode !== "daily" && !clientPuzzleId) {
     return NextResponse.json({ error: "puzzleId required for challenge modes" }, { status: 400 });
+  }
+  if (mode === "campaign" && !clientPeriodKey) {
+    return NextResponse.json({ error: "periodKey required for campaign mode" }, { status: 400 });
   }
 
   const db = getDb();
@@ -72,6 +77,24 @@ export async function POST(req: NextRequest) {
           eq(attempts.periodKey, weekId)
         )
       )
+      .limit(1);
+    if (existing) {
+      return NextResponse.json({
+        isCorrect: existing.isCorrect,
+        forwardReturnPct: Number(existing.forwardReturnPct),
+        explanation: existing.aiExplanation,
+        xpAwarded: existing.xpAwarded,
+        newBadges: [],
+      });
+    }
+  }
+
+  // --- Campaign idempotency (one per mission) ---
+  if (mode === "campaign" && clientPeriodKey) {
+    const [existing] = await db
+      .select()
+      .from(attempts)
+      .where(and(eq(attempts.userId, userId), eq(attempts.mode, "campaign"), eq(attempts.periodKey, clientPeriodKey)))
       .limit(1);
     if (existing) {
       return NextResponse.json({
@@ -133,6 +156,30 @@ export async function POST(req: NextRequest) {
       if (Number(count) >= SPEED_DAILY_CAP) {
         return NextResponse.json({ error: `Speed mode capped at ${SPEED_DAILY_CAP} runs per day` }, { status: 429 });
       }
+    }
+
+    if (mode === "campaign" && clientPeriodKey) {
+      const parsed = parseCampaignPeriodKey(clientPeriodKey);
+      if (!parsed || !getCampaign(parsed.slug)) {
+        return NextResponse.json({ error: "Unknown campaign mission" }, { status: 400 });
+      }
+      const campaign = getCampaign(parsed.slug)!;
+      const mission = campaign.missions[parsed.missionIndex];
+      if (!mission || mission.orderIndex !== puzzle.orderIndex) {
+        return NextResponse.json({ error: "Puzzle does not match campaign mission" }, { status: 400 });
+      }
+      if (parsed.missionIndex > 0) {
+        const priorKey = campaignPeriodKey(parsed.slug, parsed.missionIndex - 1);
+        const [prior] = await db
+          .select({ id: attempts.id })
+          .from(attempts)
+          .where(and(eq(attempts.userId, userId), eq(attempts.mode, "campaign"), eq(attempts.periodKey, priorKey)))
+          .limit(1);
+        if (!prior) {
+          return NextResponse.json({ error: "Previous mission not completed" }, { status: 400 });
+        }
+      }
+      periodKey = clientPeriodKey;
     }
   }
 
@@ -210,7 +257,12 @@ export async function POST(req: NextRequest) {
     const earnedRows = await db.select({ badgeId: userBadges.badgeId }).from(userBadges).where(eq(userBadges.userId, userId));
     const alreadyEarned = new Set(earnedRows.map((r) => r.badgeId));
     const history: AttemptRecord[] = await db
-      .select({ date: attempts.attemptDate, isCorrect: attempts.isCorrect, mode: attempts.mode })
+      .select({
+        date: attempts.attemptDate,
+        isCorrect: attempts.isCorrect,
+        mode: attempts.mode,
+        periodKey: attempts.periodKey,
+      })
       .from(attempts)
       .where(eq(attempts.userId, userId));
     const justEarned = checkNewlyEarnedBadges(history, alreadyEarned);

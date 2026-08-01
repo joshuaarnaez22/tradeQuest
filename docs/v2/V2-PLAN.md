@@ -54,7 +54,9 @@ Full design in [CHALLENGE-VARIETY-SPEC.md](CHALLENGE-VARIETY-SPEC.md): weekly ch
 
 ---
 
-## 4. Historical Campaigns — build this last
+## 4. Historical Campaigns — ✅ shipped 2026-08-02
+
+Full design in [HISTORICAL-CAMPAIGNS-SPEC.md](HISTORICAL-CAMPAIGNS-SPEC.md): two story arcs (`contagion-2022`, `covid-shock`) from existing named puzzles, sequential missions, campaign-mode attempts (XP yes, streak/goals no).
 
 **The problem it fixes:** right now every puzzle is a disconnected, isolated moment. There's no "story" — nothing like living through the 2008 crash or the FTX collapse puzzle by puzzle.
 

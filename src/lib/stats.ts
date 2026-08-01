@@ -70,7 +70,12 @@ export async function getEarnedBadgeIds(userId: string): Promise<Set<string>> {
 export async function getAttemptRecords(userId: string) {
   const db = getDb();
   return db
-    .select({ date: attempts.attemptDate, isCorrect: attempts.isCorrect, mode: attempts.mode })
+    .select({
+      date: attempts.attemptDate,
+      isCorrect: attempts.isCorrect,
+      mode: attempts.mode,
+      periodKey: attempts.periodKey,
+    })
     .from(attempts)
     .where(eq(attempts.userId, userId));
 }

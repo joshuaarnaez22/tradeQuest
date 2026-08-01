@@ -9,7 +9,7 @@ export const CHALLENGE_MODES = ["mistake", "speed", "weekly"] as const;
 export type ChallengeMode = (typeof CHALLENGE_MODES)[number];
 
 export function isAttemptMode(value: unknown): value is AttemptMode {
-  return value === "daily" || value === "mistake" || value === "speed" || value === "weekly";
+  return value === "daily" || value === "mistake" || value === "speed" || value === "weekly" || value === "campaign";
 }
 
 // ISO week id as YYYY-Www (UTC), matching the period_key stored on weekly attempts.

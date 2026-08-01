@@ -51,7 +51,7 @@ export const puzzles = pgTable(
 export const decisionEnum = ["buy", "sell", "wait"] as const;
 export type Decision = (typeof decisionEnum)[number];
 
-export const attemptModeEnum = ["daily", "mistake", "speed", "weekly"] as const;
+export const attemptModeEnum = ["daily", "mistake", "speed", "weekly", "campaign"] as const;
 export type AttemptMode = (typeof attemptModeEnum)[number];
 
 // RLS: a user may read and insert only their own attempts. No update/delete
@@ -72,7 +72,7 @@ export const attempts = pgTable(
     // Challenge Variety: daily is the streak/habit row; other modes award XP
     // without counting toward streak or weekly/monthly goals.
     mode: text("mode", { enum: attemptModeEnum }).notNull().default("daily"),
-    // ISO week key (YYYY-Www) for weekly-mode rows; null otherwise.
+    // ISO week key (YYYY-Www) for weekly rows; `{slug}:{step}` for campaign rows.
     periodKey: text("period_key"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
@@ -87,6 +87,10 @@ export const attempts = pgTable(
     uniqueIndex("attempts_weekly_unique")
       .on(table.userId, table.puzzleId, table.mode, table.periodKey)
       .where(sql`${table.mode} = 'weekly'`),
+    // One graded attempt per campaign mission (period_key = slug:step).
+    uniqueIndex("attempts_campaign_unique")
+      .on(table.userId, table.mode, table.periodKey)
+      .where(sql`${table.mode} = 'campaign'`),
     // puzzle_id is a bare FK with no other index covering it (leaderboard/stats
     // group by user_id, not puzzle_id, so the unique indexes above don't help).
     index("attempts_puzzle_id_idx").on(table.puzzleId),

@@ -35,11 +35,13 @@ const MODE_LABEL: Record<AttemptMode, string> = {
   mistake: "mistake replay",
   speed: "speed",
   weekly: "weekly challenge",
+  campaign: "campaign",
 };
 
 export function ReplaySession({
   mode = "daily",
   puzzleId,
+  periodKey,
   symbol,
   timeframe,
   historyCandles,
@@ -48,9 +50,11 @@ export function ReplaySession({
   initialDecision,
   initialResult,
   doneMessage,
+  beat,
 }: {
   mode?: AttemptMode;
   puzzleId?: string;
+  periodKey?: string;
   symbol: string;
   timeframe: string;
   historyCandles: CandleDatum[];
@@ -59,18 +63,20 @@ export function ReplaySession({
   initialDecision: Decision | null;
   initialResult: Result | null;
   doneMessage?: string;
+  beat?: { title: string; body: string } | null;
 }) {
   const [decision, setDecision] = useState<Decision | null>(initialDecision);
   const [result, setResult] = useState<Result | null>(initialResult);
   const [pending, setPending] = useState(false);
   const [lessonDismissed, setLessonDismissed] = useState(!lesson);
+  const [beatDismissed, setBeatDismissed] = useState(!beat || !!initialResult);
   const [historyDone, setHistoryDone] = useState(!!initialDecision || !!initialResult || mode !== "speed");
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
 
   const revealed = decision !== null;
   const isSpeed = mode === "speed";
   const speedMultiplier = isSpeed ? 2 : 1;
-  const canDecide = !revealed && (mode !== "speed" || historyDone);
+  const canDecide = !revealed && (mode !== "speed" || historyDone) && beatDismissed && lessonDismissed;
 
   // History reveal finished → start the speed decision timer (fresh sessions only).
   useEffect(() => {
@@ -102,6 +108,7 @@ export function ReplaySession({
           decision: next,
           mode,
           ...(puzzleId ? { puzzleId } : {}),
+          ...(periodKey ? { periodKey } : {}),
           ...(timedOut ? { timedOut: true } : {}),
         }),
       });
@@ -188,7 +195,43 @@ export function ReplaySession({
         </div>
       )}
 
-      {lessonDismissed && (
+      {beat && !beatDismissed && (
+        <div
+          data-testid="campaign-beat"
+          style={{
+            display: "grid",
+            gap: 12,
+            background: "var(--surface-card)",
+            border: "var(--border-width-thick) solid var(--border-default)",
+            borderRadius: 24,
+            padding: "20px 24px",
+            boxShadow: "var(--shadow-flat-md)",
+          }}
+        >
+          <h2 className="font-display" style={{ fontSize: "var(--text-display-4)", margin: 0 }}>
+            {beat.title}
+          </h2>
+          <p style={{ margin: 0, fontSize: 15, lineHeight: 1.5 }}>{beat.body}</p>
+          <button
+            data-testid="campaign-beat-continue"
+            onClick={() => setBeatDismissed(true)}
+            style={{
+              justifySelf: "start",
+              background: "var(--violet-500)",
+              color: "white",
+              border: "none",
+              borderRadius: "var(--radius-pill)",
+              padding: "10px 20px",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Begin mission →
+          </button>
+        </div>
+      )}
+
+      {lessonDismissed && beatDismissed && (
         <>
           <ReplayChart
             historyCandles={historyCandles}
@@ -202,7 +245,7 @@ export function ReplaySession({
         </>
       )}
 
-      {lessonDismissed && revealed && !result && (
+      {lessonDismissed && beatDismissed && revealed && !result && (
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "16px 20px" }}>
           <span
             aria-hidden
