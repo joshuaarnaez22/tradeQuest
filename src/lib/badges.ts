@@ -1,6 +1,7 @@
 import assert from "node:assert";
 import type { AttemptMode } from "@/db/schema";
 import { CAMPAIGNS, campaignPeriodKey } from "@/lib/campaigns";
+import { LEARN_MODULES } from "@/lib/learn-modules";
 
 // Badge catalog + all "is this earned" math. Definitions live here in code,
 // not the database — src/lib/lessons.ts is the same pattern. Only the fact
@@ -143,6 +144,30 @@ export const BADGES: Badge[] = [
     })
   ),
 ];
+
+// Learn badges key off quiz_completions, not attempts — checked in /api/quiz.
+export const LEARN_BADGES: { id: string; title: string; description: string; isEarned: (passedModuleIds: Set<string>) => boolean }[] = [
+  {
+    id: "first_quiz_pass",
+    title: "First Quiz Pass",
+    description: "Pass any Learn module quiz.",
+    isEarned: (ids) => ids.size >= 1,
+  },
+  {
+    id: "learn_all_modules",
+    title: "Chart Literacy",
+    description: "Pass all four Learn module quizzes.",
+    isEarned: (ids) => LEARN_MODULES.every((m) => ids.has(m.id)),
+  },
+];
+
+export function checkNewlyEarnedLearnBadges(passedModuleIds: Set<string>, alreadyEarnedIds: Set<string>) {
+  return LEARN_BADGES.filter((b) => !alreadyEarnedIds.has(b.id) && b.isEarned(passedModuleIds));
+}
+
+export function allDisplayBadges() {
+  return [...BADGES, ...LEARN_BADGES.map(({ id, title, description }) => ({ id, title, description }))];
+}
 
 export function checkNewlyEarnedBadges(records: AttemptRecord[], alreadyEarnedIds: Set<string>): Badge[] {
   return BADGES.filter((b) => !alreadyEarnedIds.has(b.id) && b.isEarned(records));

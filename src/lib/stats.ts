@@ -1,16 +1,23 @@
 import { and, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { attempts, users, userBadges } from "@/db/schema";
+import { attempts, users, userBadges, quizCompletions } from "@/db/schema";
 
 // Derived, not stored — TECH-STACK.md: don't build a mutable counter table
-// until querying `attempts` measurably doesn't scale.
+// until querying `attempts` measurably doesn't scale. Quiz XP is added from
+// quiz_completions so Learn passes count toward level/leaderboard.
 export async function getUserXp(userId: string): Promise<number> {
   const db = getDb();
-  const [row] = await db
-    .select({ total: sql<number>`coalesce(sum(${attempts.xpAwarded}), 0)` })
-    .from(attempts)
-    .where(eq(attempts.userId, userId));
-  return Number(row?.total ?? 0);
+  const [[attemptRow], [quizRow]] = await Promise.all([
+    db
+      .select({ total: sql<number>`coalesce(sum(${attempts.xpAwarded}), 0)` })
+      .from(attempts)
+      .where(eq(attempts.userId, userId)),
+    db
+      .select({ total: sql<number>`coalesce(sum(${quizCompletions.xpAwarded}), 0)` })
+      .from(quizCompletions)
+      .where(eq(quizCompletions.userId, userId)),
+  ]);
+  return Number(attemptRow?.total ?? 0) + Number(quizRow?.total ?? 0);
 }
 
 // Pure function: walks distinct attempt dates (already sorted descending)
@@ -82,15 +89,34 @@ export async function getAttemptRecords(userId: string) {
 
 export async function getLeaderboard(limit = 50) {
   const db = getDb();
-  return db
+  // Attempt XP + quiz XP so Learn passes count on the board.
+  const attemptXp = db
     .select({
       userId: attempts.userId,
-      displayName: users.displayName,
-      xp: sql<number>`coalesce(sum(${attempts.xpAwarded}), 0)`,
+      xp: sql<number>`coalesce(sum(${attempts.xpAwarded}), 0)`.as("xp"),
     })
     .from(attempts)
-    .innerJoin(users, eq(users.id, attempts.userId))
-    .groupBy(attempts.userId, users.displayName)
-    .orderBy(desc(sql`coalesce(sum(${attempts.xpAwarded}), 0)`))
+    .groupBy(attempts.userId)
+    .as("attempt_xp");
+  const quizXp = db
+    .select({
+      userId: quizCompletions.userId,
+      xp: sql<number>`coalesce(sum(${quizCompletions.xpAwarded}), 0)`.as("xp"),
+    })
+    .from(quizCompletions)
+    .groupBy(quizCompletions.userId)
+    .as("quiz_xp");
+
+  return db
+    .select({
+      userId: users.id,
+      displayName: users.displayName,
+      xp: sql<number>`coalesce(${attemptXp.xp}, 0) + coalesce(${quizXp.xp}, 0)`,
+    })
+    .from(users)
+    .leftJoin(attemptXp, eq(attemptXp.userId, users.id))
+    .leftJoin(quizXp, eq(quizXp.userId, users.id))
+    .where(sql`coalesce(${attemptXp.xp}, 0) + coalesce(${quizXp.xp}, 0) > 0`)
+    .orderBy(desc(sql`coalesce(${attemptXp.xp}, 0) + coalesce(${quizXp.xp}, 0)`))
     .limit(limit);
 }

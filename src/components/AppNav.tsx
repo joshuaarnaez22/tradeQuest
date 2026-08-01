@@ -8,6 +8,7 @@ import { Tag } from "@/components/core/Tag";
 
 const LINKS = [
   { href: "/replay", label: "Replay" },
+  { href: "/learn", label: "Learn" },
   { href: "/challenges", label: "Challenges" },
   { href: "/campaigns", label: "Campaigns" },
   { href: "/dashboard", label: "Dashboard" },

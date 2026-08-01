@@ -118,3 +118,31 @@ export const userBadges = pgTable(
     pgPolicy("user_badges_insert_own", { for: "insert", to: authenticatedRole, withCheck: authUid(table.userId) }),
   ]
 ).enableRLS();
+
+// First-pass quiz results for Learn modules. Module definitions live in
+// src/lib/learn-modules.ts — this table only stores completion + XP.
+export const quizCompletions = pgTable(
+  "quiz_completions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id").notNull().references(() => users.id),
+    moduleId: text("module_id").notNull(), // matches an id in src/lib/learn-modules.ts
+    score: integer("score").notNull(),
+    total: integer("total").notNull(),
+    passed: boolean("passed").notNull(),
+    xpAwarded: integer("xp_awarded").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    unique("quiz_completions_user_module_unique").on(table.userId, table.moduleId),
+    pgPolicy("quiz_completions_select_own", { for: "select", to: authenticatedRole, using: authUid(table.userId) }),
+    pgPolicy("quiz_completions_insert_own", { for: "insert", to: authenticatedRole, withCheck: authUid(table.userId) }),
+    pgPolicy("quiz_completions_update_own", {
+      for: "update",
+      to: authenticatedRole,
+      using: authUid(table.userId),
+      withCheck: authUid(table.userId),
+    }),
+  ]
+).enableRLS();

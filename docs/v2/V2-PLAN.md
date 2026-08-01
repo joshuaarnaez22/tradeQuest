@@ -68,6 +68,10 @@ Full design in [HISTORICAL-CAMPAIGNS-SPEC.md](HISTORICAL-CAMPAIGNS-SPEC.md): two
 
 ---
 
+## Learn + Quiz — ✅ shipped 2026-08-02
+
+Players asked for explicit teaching beyond struggle cards. Spec: [LEARN-QUIZ-SPEC.md](LEARN-QUIZ-SPEC.md) — four concept modules (Support & Resistance, Trends, Breakouts, Ranges) with a multiple-choice quiz after each lesson. XP on first pass; no streak impact.
+
 ## What happens next
 
 Review this and tell me:

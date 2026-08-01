@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { getUserXp, getUserStreak, getRecentSessions, getEarnedBadgeIds, getAttemptRecords } from "@/lib/stats";
 import { levelForXp } from "@/lib/xp";
-import { BADGES, currentPeriodProgress } from "@/lib/badges";
+import { allDisplayBadges, currentPeriodProgress } from "@/lib/badges";
 import { Card } from "@/components/core/Card";
 import { StreakFlame } from "@/components/gamification/StreakFlame";
 import { XPBar } from "@/components/ui/XPBar";
@@ -21,6 +21,7 @@ export default async function DashboardPage() {
   const { level, xpIntoLevel, xpPerLevel, title } = levelForXp(xp);
   const { weekCount, weekGoal, monthCount, monthGoal } = currentPeriodProgress(attemptRecords);
 
+  const displayBadges = allDisplayBadges();
   const correctCount = sessions.filter((s) => s.isCorrect).length;
 
   return (
@@ -109,10 +110,10 @@ export default async function DashboardPage() {
             marginBottom: 14,
           }}
         >
-          Badges — {earnedBadgeIds.size} / {BADGES.length}
+          Badges — {earnedBadgeIds.size} / {displayBadges.length}
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
-          {BADGES.map((badge) => {
+          {displayBadges.map((badge) => {
             const earned = earnedBadgeIds.has(badge.id);
             return (
               <div

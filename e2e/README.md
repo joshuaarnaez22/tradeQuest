@@ -31,3 +31,6 @@ Starts the dev server automatically if it isn't already running (`reuseExistingS
 - `dashboard.spec.ts` — streak, level/XP progress, and recent-sessions list render real data.
 - `leaderboard.spec.ts` — ranked rows with medals; adapts its assertions if `seed:dummy-data` has been run.
 - `gamification.spec.ts` — v2 pillar #2. Dashboard shows the level title, goal bars, and badge grid. The actual award-on-grade path (badges appearing after a real submission) is exercised for real by `replay.spec.ts`'s grading test, not duplicated here — see `scripts/seed-gamification-demo.ts` for how to trigger it manually.
+- `challenges.spec.ts` — v2 pillar #3. Challenges hub, weekly mode grading, and proof that challenge attempts don't inflate weekly goal bars.
+- `campaigns.spec.ts` — v2 pillar #4. Campaign hub, sequential mission lock, campaign-mode grading.
+- `learn.spec.ts` — Learn + Quiz. Hub lists four modules; lesson renders; passing Support & Resistance writes `quiz_completions`, awards +20 XP once, and unlocks `first_quiz_pass`.
