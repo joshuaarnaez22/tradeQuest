@@ -11,7 +11,7 @@ npx playwright test -g "nothing" # ensures browsers are installed; or just run t
 npx playwright codegen --save-storage=e2e/.auth/user.json http://localhost:3000/sign-in
 ```
 
-Sign in in the browser window that opens (email or Google, whichever you normally use), wait for it to land on `/replay`, then close the window. This saves your session cookies to `e2e/.auth/user.json` — gitignored, it's your personal session, not something to commit.
+Sign in in the browser window that opens (email or Google, whichever you normally use), wait for it to land on `/home` (then Learn or Replay by level), then close the window. This saves your session cookies to `e2e/.auth/user.json` — gitignored, it's your personal session, not something to commit.
 
 Re-run this whenever the saved session expires (tests will fail at the `/replay` navigation with a redirect to `/sign-in` if it has).
 

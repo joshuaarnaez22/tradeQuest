@@ -8,6 +8,7 @@ import { campaignPeriodKey, getCampaign } from "@/lib/campaigns";
 import { getCampaignProgress } from "@/lib/campaign-queries";
 import { ReplaySession } from "@/components/replay/ReplaySession";
 import { PhasePlaceholder } from "@/components/PhasePlaceholder";
+import { requireFeature } from "@/lib/require-feature";
 
 export default async function CampaignMissionPage({
   params,
@@ -16,6 +17,8 @@ export default async function CampaignMissionPage({
 }) {
   const { userId } = await auth();
   if (!userId) return null;
+  const locked = await requireFeature(userId, "campaigns");
+  if (locked) return locked;
   const { slug, step: stepRaw } = await params;
   const step = Number(stepRaw);
   if (!Number.isInteger(step) || step < 0) notFound();

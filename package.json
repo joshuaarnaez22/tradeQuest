@@ -17,6 +17,7 @@
     "test:e2e:challenges": "playwright test e2e/challenges.spec.ts",
     "test:e2e:campaigns": "playwright test e2e/campaigns.spec.ts",
     "test:e2e:learn": "playwright test e2e/learn.spec.ts",
+    "test:e2e:unlocks": "playwright test e2e/feature-unlocks.spec.ts",
     "seed:puzzles": "tsx --env-file=.env.local scripts/seed-puzzles.ts --commit",
     "seed:dummy-data": "tsx --env-file=.env.local scripts/seed-dummy-data.ts --commit",
     "seed:pattern-types": "tsx --env-file=.env.local scripts/backfill-pattern-types.ts --commit",

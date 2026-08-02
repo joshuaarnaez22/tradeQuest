@@ -15,7 +15,8 @@ export type LearnModule = {
 };
 
 export const QUIZ_PASS_RATIO = 0.75;
-export const QUIZ_PASS_XP = 20;
+// 25 × 4 modules = 100 XP → Level 2, which unlocks daily Replay.
+export const QUIZ_PASS_XP = 25;
 
 export const LEARN_MODULES: LearnModule[] = [
   {

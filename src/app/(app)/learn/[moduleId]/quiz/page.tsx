@@ -30,7 +30,7 @@ export default async function LearnQuizPage({ params }: { params: Promise<{ modu
           Quiz · {mod.title}
         </h1>
         <p style={{ margin: "8px 0 0", color: "var(--text-secondary)", fontSize: 14 }}>
-          Pass with at least 3 of 4 correct. First pass awards +20 XP.
+          Pass with at least 3 of 4 correct. First pass awards +25 XP.
         </p>
       </div>
       <QuizForm module={clientModule} />

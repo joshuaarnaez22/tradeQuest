@@ -7,10 +7,14 @@ import { getStruggleForPatternType } from "@/lib/learning";
 import { LESSONS } from "@/lib/lessons";
 import { ReplaySession } from "@/components/replay/ReplaySession";
 import { PhasePlaceholder } from "@/components/PhasePlaceholder";
+import { requireFeature } from "@/lib/require-feature";
 
 export default async function ReplayPage() {
   const { userId } = await auth();
   if (!userId) return null; // (app)/layout.tsx already redirects; defensive only
+
+  const locked = await requireFeature(userId, "replay");
+  if (locked) return locked;
 
   const db = getDb();
   const attemptDate = todayUtcDateString();

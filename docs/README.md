@@ -26,6 +26,7 @@ Start with [HANDOFF.md](HANDOFF.md) — it's the single source of truth for what
 | [CHALLENGE-VARIETY-SPEC.md](v2/CHALLENGE-VARIETY-SPEC.md) | Full technical design for v2 pillar #3 (weekly / speed / mistakes). ✅ Shipped. |
 | [HISTORICAL-CAMPAIGNS-SPEC.md](v2/HISTORICAL-CAMPAIGNS-SPEC.md) | Full technical design for v2 pillar #4 (story arcs from named events). ✅ Shipped. |
 | [LEARN-QUIZ-SPEC.md](v2/LEARN-QUIZ-SPEC.md) | Concept lessons + graded quizzes (S/R, trends, breakouts, ranges). ✅ Shipped. |
+| [FEATURE-UNLOCKS-SPEC.md](v2/FEATURE-UNLOCKS-SPEC.md) | Level-gated features (Learn → Replay → Challenges → Campaigns). ✅ Shipped. |
 
 ## Backlog tracking
 

@@ -72,6 +72,10 @@ Full design in [HISTORICAL-CAMPAIGNS-SPEC.md](HISTORICAL-CAMPAIGNS-SPEC.md): two
 
 Players asked for explicit teaching beyond struggle cards. Spec: [LEARN-QUIZ-SPEC.md](LEARN-QUIZ-SPEC.md) — four concept modules (Support & Resistance, Trends, Breakouts, Ranges) with a multiple-choice quiz after each lesson. XP on first pass; no streak impact.
 
+## Feature Unlocks — ✅ shipped 2026-08-02
+
+Learn-first progression: Level 1 = Learn (+ Dashboard/Leaderboard); Level 2 = Replay; Level 3 = Challenges; Level 4 = Campaigns. Spec: [FEATURE-UNLOCKS-SPEC.md](FEATURE-UNLOCKS-SPEC.md).
+
 ## What happens next
 
 Review this and tell me:

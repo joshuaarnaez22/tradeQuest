@@ -8,10 +8,14 @@ import { getSpeedRunsToday } from "@/lib/challenge-queries";
 import { ReplaySession } from "@/components/replay/ReplaySession";
 import { PhasePlaceholder } from "@/components/PhasePlaceholder";
 import Link from "next/link";
+import { requireFeature } from "@/lib/require-feature";
 
 export default async function SpeedChallengePage() {
   const { userId } = await auth();
   if (!userId) return null;
+
+  const locked = await requireFeature(userId, "challenges");
+  if (locked) return locked;
 
   const runsToday = await getSpeedRunsToday(userId);
   if (runsToday >= SPEED_DAILY_CAP) {

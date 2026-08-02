@@ -6,10 +6,13 @@ import { attempts, puzzles } from "@/db/schema";
 import { getMistakeQueue } from "@/lib/challenge-queries";
 import { ReplaySession } from "@/components/replay/ReplaySession";
 import { PhasePlaceholder } from "@/components/PhasePlaceholder";
+import { requireFeature } from "@/lib/require-feature";
 
 export default async function MistakeReplayPage({ params }: { params: Promise<{ puzzleId: string }> }) {
   const { userId } = await auth();
   if (!userId) return null;
+  const locked = await requireFeature(userId, "challenges");
+  if (locked) return locked;
   const { puzzleId } = await params;
 
   const queue = await getMistakeQueue(userId);

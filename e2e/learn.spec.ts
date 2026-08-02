@@ -53,7 +53,7 @@ test.describe("Learn + Quiz", () => {
 
     await expect(page.getByTestId("quiz-result")).toBeVisible({ timeout: 15_000 });
     await expect(page.getByTestId("quiz-result")).toContainText("Passed");
-    await expect(page.getByTestId("quiz-result")).toContainText("+20 XP");
+    await expect(page.getByTestId("quiz-result")).toContainText("+25 XP");
 
     const rows = await sql`
       select module_id, passed, xp_awarded, score, total
@@ -61,7 +61,7 @@ test.describe("Learn + Quiz", () => {
       where user_id = ${userId} and module_id = ${moduleId}`;
     expect(rows.length).toBe(1);
     expect(rows[0].passed).toBe(true);
-    expect(Number(rows[0].xp_awarded)).toBe(20);
+    expect(Number(rows[0].xp_awarded)).toBe(25);
     expect(Number(rows[0].score)).toBe(4);
 
     const badges = await sql`
@@ -78,7 +78,7 @@ test.describe("Learn + Quiz", () => {
 
     const rowsAfter = await sql`
       select xp_awarded from quiz_completions where user_id = ${userId} and module_id = ${moduleId}`;
-    expect(Number(rowsAfter[0].xp_awarded)).toBe(20);
+    expect(Number(rowsAfter[0].xp_awarded)).toBe(25);
   });
 
   test("quiz_completions table exists with unique user+module", async () => {

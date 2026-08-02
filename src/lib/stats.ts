@@ -90,10 +90,11 @@ export async function getAttemptRecords(userId: string) {
 export async function getLeaderboard(limit = 50) {
   const db = getDb();
   // Attempt XP + quiz XP so Learn passes count on the board.
+  // Distinct column aliases — both named "xp" collapses to ambiguous "xp" in SQL.
   const attemptXp = db
     .select({
       userId: attempts.userId,
-      xp: sql<number>`coalesce(sum(${attempts.xpAwarded}), 0)`.as("xp"),
+      attemptTotal: sql<number>`coalesce(sum(${attempts.xpAwarded}), 0)`.as("attempt_total"),
     })
     .from(attempts)
     .groupBy(attempts.userId)
@@ -101,7 +102,7 @@ export async function getLeaderboard(limit = 50) {
   const quizXp = db
     .select({
       userId: quizCompletions.userId,
-      xp: sql<number>`coalesce(sum(${quizCompletions.xpAwarded}), 0)`.as("xp"),
+      quizTotal: sql<number>`coalesce(sum(${quizCompletions.xpAwarded}), 0)`.as("quiz_total"),
     })
     .from(quizCompletions)
     .groupBy(quizCompletions.userId)
@@ -111,12 +112,12 @@ export async function getLeaderboard(limit = 50) {
     .select({
       userId: users.id,
       displayName: users.displayName,
-      xp: sql<number>`coalesce(${attemptXp.xp}, 0) + coalesce(${quizXp.xp}, 0)`,
+      xp: sql<number>`coalesce(${attemptXp.attemptTotal}, 0) + coalesce(${quizXp.quizTotal}, 0)`,
     })
     .from(users)
     .leftJoin(attemptXp, eq(attemptXp.userId, users.id))
     .leftJoin(quizXp, eq(quizXp.userId, users.id))
-    .where(sql`coalesce(${attemptXp.xp}, 0) + coalesce(${quizXp.xp}, 0) > 0`)
-    .orderBy(desc(sql`coalesce(${attemptXp.xp}, 0) + coalesce(${quizXp.xp}, 0)`))
+    .where(sql`coalesce(${attemptXp.attemptTotal}, 0) + coalesce(${quizXp.quizTotal}, 0) > 0`)
+    .orderBy(desc(sql`coalesce(${attemptXp.attemptTotal}, 0) + coalesce(${quizXp.quizTotal}, 0)`))
     .limit(limit);
 }

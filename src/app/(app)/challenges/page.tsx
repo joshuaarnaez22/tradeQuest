@@ -2,10 +2,14 @@ import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { Card } from "@/components/core/Card";
 import { getMistakeQueue, getWeeklyChallengeState, getSpeedRunsToday, SPEED_DAILY_CAP } from "@/lib/challenge-queries";
+import { requireFeature } from "@/lib/require-feature";
 
 export default async function ChallengesPage() {
   const { userId } = await auth();
   if (!userId) return null;
+
+  const locked = await requireFeature(userId, "challenges");
+  if (locked) return locked;
 
   const [mistakes, weekly, speedRuns] = await Promise.all([
     getMistakeQueue(userId),

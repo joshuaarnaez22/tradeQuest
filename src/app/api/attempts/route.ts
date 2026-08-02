@@ -11,6 +11,8 @@ import { attemptsRatelimit } from "@/lib/ratelimit";
 import { checkNewlyEarnedBadges, type AttemptRecord } from "@/lib/badges";
 import { isAttemptMode, isoWeekId, SPEED_DAILY_CAP, weeklyPuzzleIds } from "@/lib/challenges";
 import { campaignPeriodKey, getCampaign, parseCampaignPeriodKey } from "@/lib/campaigns";
+import { featureForAttemptMode, isFeatureUnlocked, unlockLevelFor } from "@/lib/feature-unlocks";
+import { getUserLevel } from "@/lib/user-level";
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -27,6 +29,15 @@ export async function POST(req: NextRequest) {
   const timedOut = body?.timedOut === true;
   const clientPuzzleId = typeof body?.puzzleId === "string" ? body.puzzleId : undefined;
   const clientPeriodKey = typeof body?.periodKey === "string" ? body.periodKey : undefined;
+
+  const feature = featureForAttemptMode(mode);
+  const level = await getUserLevel(userId);
+  if (!isFeatureUnlocked(level, feature)) {
+    return NextResponse.json(
+      { error: `Locked until Level ${unlockLevelFor(feature)}`, feature, level },
+      { status: 403 }
+    );
+  }
 
   let decision = body?.decision as Decision | undefined;
   if (timedOut && mode === "speed") {

@@ -2,10 +2,14 @@ import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { Card } from "@/components/core/Card";
 import { getAllCampaignProgress } from "@/lib/campaign-queries";
+import { requireFeature } from "@/lib/require-feature";
 
 export default async function CampaignsHubPage() {
   const { userId } = await auth();
   if (!userId) return null;
+
+  const locked = await requireFeature(userId, "campaigns");
+  if (locked) return locked;
 
   const campaigns = await getAllCampaignProgress(userId);
 

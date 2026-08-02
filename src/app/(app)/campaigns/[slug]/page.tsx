@@ -3,10 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card } from "@/components/core/Card";
 import { getCampaignProgress } from "@/lib/campaign-queries";
+import { requireFeature } from "@/lib/require-feature";
 
 export default async function CampaignDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { userId } = await auth();
   if (!userId) return null;
+  const locked = await requireFeature(userId, "campaigns");
+  if (locked) return locked;
   const { slug } = await params;
 
   const progress = await getCampaignProgress(userId, slug);

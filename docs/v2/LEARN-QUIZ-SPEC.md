@@ -12,7 +12,7 @@ Players want explicit teaching (e.g. support & resistance) plus a quiz — not o
 - **Lesson then quiz** — sequential within a module; hub shows progress.
 - **Multiple choice only** (4 questions each). No chart drawing / click-S/R yet.
 - **Pass = ≥ 75%** correct (3 of 4). Fail → retry anytime.
-- **XP once on first pass** (flat 20 XP). Retries grade but award 0. Does **not** affect streak or weekly/monthly goals.
+- **XP once on first pass** (flat 25 XP — 4 modules = 100 XP → Level 2 / Replay unlock). Retries grade but award 0. Does **not** affect streak or weekly/monthly goals.
 - **Definitions in code** (`src/lib/learn-modules.ts`), same pattern as lessons/campaigns.
 - **Compliance:** educational framing only — never “advice,” never personalized guidance.
 
@@ -28,10 +28,10 @@ New table `quiz_completions`:
 | score | int — number correct |
 | total | int — question count |
 | passed | boolean |
-| xp_awarded | int — 20 on first pass, else 0 |
+| xp_awarded | int — 25 on first pass, else 0 |
 | created_at / updated_at | timestamptz |
 
-Unique on `(user_id, module_id)` — one row per module; retries update score/passed but only the first successful pass sets `xp_awarded = 20`.
+Unique on `(user_id, module_id)` — one row per module; retries update score/passed but only the first successful pass sets `xp_awarded = 25`.
 
 `getUserXp` / leaderboard sum **attempts.xp_awarded + quiz_completions.xp_awarded**.
 
@@ -68,7 +68,7 @@ Unique on `(user_id, module_id)` — one row per module; retries update score/pa
 - Videos, flashcards, glossary CMS
 - Fill-blank / drag-drop question types
 - AI-generated lessons
-- Gating daily puzzle behind quizzes
+- Soft tutorial instead of level gates (level gates live in [FEATURE-UNLOCKS-SPEC.md](FEATURE-UNLOCKS-SPEC.md))
 
 ## Rough shape of the work
 
